@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learning Finder</title>
+  <meta name="description" content="Want to learn something? Find free textbooks, courses and books on any topic, and get a ready-made prompt for a personal learning plan.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="../../shared/net.js"></script>
+  <script defer src="sources.js"></script>
+  <script defer src="prompts.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Learning Finder">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Learning Finder</h1>
+      <p class="lead">Type anything you want to learn. Get an overview, free textbooks, courses and books, and a ready-made prompt to ask an AI assistant for a personal plan.</p>
+      <div class="notice small online-note">
+        <p><span class="badge badge--online">Uses the internet</span> Searches Wikipedia, Wikibooks, Wikiversity and Open Library.</p>
+        <p>It sends only the topic you type: five small requests per search, saved in your browser for a day.</p>
+      </div>
+    </section>
+
+    <form id="form" class="card ask" novalidate>
+      <label for="topic" class="ask__label">What do you want to learn?</label>
+      <div class="ask__row">
+        <input id="topic" autocomplete="off" maxlength="120" placeholder="e.g. statistics, guitar, Spanish, photosynthesis">
+        <button class="button" type="submit">Find</button>
+      </div>
+      <div class="ask__extra">
+        <label for="lang" class="inline-label">Sources in</label>
+        <select id="lang">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="it">Italiano</option>
+          <option value="pt">Português</option>
+        </select>
+        <span class="muted small">Open Library searches books in every language.</span>
+      </div>
+      <p id="form-message" class="small" role="status" hidden></p>
+    </form>
+
+    <div id="results" class="results" hidden>
+      <section class="card" aria-labelledby="start-title">
+        <h2 id="start-title" class="card-title">Start here</h2>
+        <div id="overview"></div>
+      </section>
+
+      <div class="two">
+        <section class="card" aria-labelledby="wb-title">
+          <h2 id="wb-title" class="card-title">Free textbooks <span class="source-name">Wikibooks</span></h2>
+          <div id="wikibooks"></div>
+        </section>
+        <section class="card" aria-labelledby="wv-title">
+          <h2 id="wv-title" class="card-title">Free courses and notes <span class="source-name">Wikiversity</span></h2>
+          <div id="wikiversity"></div>
+        </section>
+      </div>
+
+      <section class="card" aria-labelledby="books-title">
+        <h2 id="books-title" class="card-title">Books you can read for free <span class="source-name">Open Library</span></h2>
+        <div id="books"></div>
+      </section>
+
+      <section class="card" aria-labelledby="more-title">
+        <h2 id="more-title" class="card-title">Search other free learning sites</h2>
+        <p class="muted small">Links that open each site's own search for your topic. This page doesn't contact them; nothing is sent until you click. They aren't connected to this site.</p>
+        <ul id="sites" class="sites"></ul>
+      </section>
+    </div>
+
+    <section class="card prompt" aria-labelledby="prompt-title">
+      <h2 id="prompt-title" class="card-title">Ask an AI assistant for a personal plan</h2>
+      <p class="muted small">Choose what fits you, then copy the prompt into any AI assistant (ChatGPT, Claude, Gemini…). It uses the topic above.</p>
+      <div class="choices">
+        <div class="field"><label for="p-level">Your level</label><select id="p-level"></select></div>
+        <div class="field"><label for="p-goal">Your goal</label><select id="p-goal"></select></div>
+        <div class="field"><label for="p-time">Time you have</label><select id="p-time"></select></div>
+        <div class="field"><label for="p-budget">Budget</label><select id="p-budget"></select></div>
+      </div>
+      <fieldset class="formats">
+        <legend>You learn best with</legend>
+        <div id="p-formats" class="formats__list"></div>
+      </fieldset>
+      <div id="templates" class="templates" role="group" aria-label="Kind of prompt"></div>
+      <textarea id="prompt" readonly aria-label="Your prompt" rows="12"></textarea>
+      <div class="prompt__actions">
+        <button id="copy" class="button" type="button">Copy prompt</button>
+        <span id="copy-status" class="small muted" role="status"></span>
+      </div>
+      <p class="notice small notice--warning">AI assistants can sound sure and still be wrong, and sometimes recommend books, courses or links that don't exist. The prompt asks them to flag uncertainty, but check anything they suggest before you rely on it.</p>
+    </section>
+
+    <p class="muted small credits">
+      Summaries from Wikipedia, Wikibooks and Wikiversity (text under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>);
+      book details and covers from <a href="https://openlibrary.org/" target="_blank" rel="noopener">Open Library</a>, part of the Internet Archive.
+    </p>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unit Converter</title>
+  <meta name="description" content="Free unit converter with exact definitions: length, weight, temperature, cooking volumes (US, UK and metric cups), area, speed and running pace, data sizes, energy, pressure, fuel economy and more.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="units.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Unit Converter">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Unit Converter</h1>
+      <p class="lead">Length, weight, temperature, cooking, data sizes and more, using the exact official definitions, with the US, UK and metric versions kept apart.</p>
+    </section>
+
+    <div class="find">
+      <label for="find" class="visually-hidden">Find a unit</label>
+      <input id="find" type="search" autocomplete="off" placeholder="Find a unit: psi, cups, mpg, stone, GiB…" aria-controls="find-list">
+      <ul id="find-list" class="find-list" role="listbox" hidden></ul>
+    </div>
+
+    <nav class="cats" id="cats" aria-label="Kinds of units"></nav>
+
+    <section class="card converter" aria-labelledby="cat-title">
+      <h2 class="visually-hidden" id="cat-title">Convert</h2>
+      <div class="row">
+        <div class="field value">
+          <label for="value">Amount</label>
+          <input id="value" type="text" inputmode="decimal" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="field">
+          <label for="from">From</label>
+          <select id="from"></select>
+        </div>
+        <button class="button button--ghost swap" type="button" id="swap" aria-label="Swap the two units" title="Swap">⇄</button>
+        <div class="field">
+          <label for="to">To</label>
+          <select id="to"></select>
+        </div>
+      </div>
+      <p id="error" class="error" role="alert" hidden></p>
+      <div class="result" aria-live="polite">
+        <p class="result__main"><span id="result"></span> <button class="button button--small button--ghost" type="button" id="copy">Copy</button></p>
+        <p id="extra" class="result__extra"></p>
+        <p id="explain" class="muted small"></p>
+      </div>
+      <p id="note" class="notice small" hidden></p>
+    </section>
+
+    <section class="card" aria-labelledby="all-title">
+      <h2 class="card-title" id="all-title">In every unit</h2>
+      <table class="all"><tbody id="all"></tbody></table>
+    </section>
+
+    <section class="card notes">
+      <h2 class="card-title">Good to know</h2>
+      <ul>
+        <li>Conversions use the official definitions: an inch is exactly 2.54 cm, a pound exactly 0.45359237 kg, a US gallon exactly 3.785411784 liters. Each result says whether the factor is exact or rounded.</li>
+        <li><strong>US and UK units differ.</strong> A UK pint is about 20% bigger than a US pint, and so are UK gallons. Recipes from Australia, Canada and New Zealand usually mean the 250 mL metric cup.</li>
+        <li>Cooking conversions between cups and grams depend on the ingredient (a cup of flour weighs much less than a cup of sugar), so they aren't included rather than guessed.</li>
+        <li>Currencies aren't included: their rates change by the minute and need a live data source.</li>
+        <li>Results show up to 10 significant digits. Typing is calculated in your browser; nothing is sent anywhere.</li>
+      </ul>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

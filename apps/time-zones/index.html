@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Time Zone Meeting Planner</title>
+  <meta name="description" content="Free time zone meeting planner: compare working hours across cities, find a time that suits everyone, and send the times or a calendar file. Handles daylight saving.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="cities.js"></script>
+  <script defer src="tz.js"></script>
+  <script defer src="planner.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Time Zone Planner">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Time Zone Meeting Planner</h1>
+      <p class="lead">See everyone's local time side by side, find an hour that suits all of you, and send the times or a calendar invite. Daylight saving is handled for any date.</p>
+    </section>
+
+    <p id="shared-note" class="notice" hidden>
+      You opened a shared plan. Changes here aren't saved.
+      <button class="button button--small" type="button" id="keep-shared">Save these places as mine</button>
+      <button class="button button--small button--ghost" type="button" id="leave-shared">Back to my places</button>
+    </p>
+
+    <div class="controls card">
+      <div class="date-row">
+        <button class="button button--small button--ghost" type="button" id="prev-day" aria-label="Previous day">‹</button>
+        <input type="date" id="date" aria-label="Date">
+        <button class="button button--small button--ghost" type="button" id="next-day" aria-label="Next day">›</button>
+        <button class="button button--small button--ghost" type="button" id="today">Today</button>
+      </div>
+      <div class="control">
+        <label for="length">Meeting length</label>
+        <select id="length">
+          <option value="30">30 minutes</option>
+          <option value="60">1 hour</option>
+          <option value="90">1½ hours</option>
+          <option value="120">2 hours</option>
+        </select>
+      </div>
+      <label class="check"><input type="checkbox" id="hour12"> 12-hour clock</label>
+    </div>
+
+    <p id="dst-note" class="notice small" hidden></p>
+
+    <section class="card grid-card" aria-labelledby="grid-title">
+      <div class="grid-head">
+        <h2 class="card-title" id="grid-title">Pick a start time</h2>
+        <ul class="legend" aria-hidden="true">
+          <li><span class="swatch k-work"></span>Working hours</li>
+          <li><span class="swatch k-edge"></span>Awake, not working</li>
+          <li><span class="swatch k-night"></span>Night</li>
+        </ul>
+      </div>
+      <p class="muted small" id="grid-help">Each column is one hour. Click a column, or pick a time below.</p>
+      <div class="grid-wrap" id="grid-wrap"></div>
+    </section>
+
+    <div class="lower">
+      <section class="card" aria-labelledby="meeting-title">
+        <h2 class="card-title" id="meeting-title">Meeting</h2>
+        <div class="control">
+          <label for="start">Starts at</label>
+          <select id="start"></select>
+        </div>
+        <ul id="meeting" class="meeting"></ul>
+        <div class="field">
+          <label for="title">Title (for the calendar file)</label>
+          <input id="title" type="text" maxlength="120" placeholder="Meeting">
+        </div>
+        <div class="actions">
+          <button class="button" type="button" id="copy-text">Copy times</button>
+          <button class="button button--ghost" type="button" id="download-ics">Calendar file (.ics)</button>
+          <button class="button button--ghost" type="button" id="copy-link">Copy link to this plan</button>
+        </div>
+        <p id="status" class="muted small" role="status"></p>
+      </section>
+
+      <section class="card" aria-labelledby="best-title">
+        <h2 class="card-title" id="best-title">Times that work best</h2>
+        <p id="best-summary" class="small"></p>
+        <ul id="best" class="best"></ul>
+      </section>
+    </div>
+
+    <section class="card places-card" aria-labelledby="places-title">
+      <h2 class="card-title" id="places-title">Places</h2>
+      <p class="muted small">The first place sets the day shown above. Working hours and work days are a starting guess; adjust them for each person.</p>
+      <div class="add">
+        <label for="search">Add a city or time zone</label>
+        <input id="search" type="search" autocomplete="off" placeholder="e.g. Bangalore, Pacific Time, Berlin" aria-controls="suggestions" aria-autocomplete="list">
+        <ul id="suggestions" class="suggestions" role="listbox" hidden></ul>
+        <p id="search-note" class="muted small"></p>
+      </div>
+      <ul id="places" class="places"></ul>
+    </section>
+
+    <section class="card notes">
+      <h2 class="card-title">Good to know</h2>
+      <ul>
+        <li>Times come from your browser's own time zone database, so the page works offline. Daylight saving changes are handled for the date you pick; when one is close, the page tells you.</li>
+        <li>Public holidays aren't included: check them for each country before you send an invite.</li>
+        <li>The calendar file stores the time in UTC, so every calendar app shows it in each person's own time.</li>
+        <li>Your list of places is saved in this browser only. A shared link contains the places, date and time, nothing else.</li>
+      </ul>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

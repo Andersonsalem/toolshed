@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Einsum Explainer</title>
+  <meta name="description" content="Learn einsum notation (numpy.einsum and torch.einsum) by clicking: type an equation, see the inputs and output as grids of numbers, and see exactly which entries are multiplied and added. With a step-by-step tutorial and cheat sheet.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="einsum.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Einsum Explainer">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Einsum Explainer</h1>
+      <p class="lead">Type an einsum equation and see it work on small grids of numbers. Click any entry of the result to see exactly what was multiplied and added to make it. New to the notation? The <a href="#tutorial">tutorial</a> below starts from zero.</p>
+    </section>
+
+    <section class="card explorer" aria-labelledby="eq-label">
+      <div class="eq-row">
+        <div class="field eq-field">
+          <label for="eq" id="eq-label">Equation</label>
+          <input id="eq" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ij,jk->ik">
+        </div>
+        <button class="button button--ghost" type="button" id="shuffle">New numbers</button>
+      </div>
+      <p id="eq-error" class="error" role="alert" hidden></p>
+      <div id="sizes" class="sizes" aria-label="Size of each letter"></div>
+
+      <div id="explain" class="explain" hidden>
+        <p class="formula" id="formula"></p>
+        <p id="same" class="same" hidden></p>
+        <ul id="roles" class="roles"></ul>
+        <div id="recipe" class="recipe" hidden></div>
+      </div>
+
+      <div id="grids" class="grids" aria-live="polite"></div>
+      <div id="pick" class="pick" aria-live="polite"></div>
+
+      <details class="loops">
+        <summary>The same thing as plain loops</summary>
+        <pre id="loops"></pre>
+      </details>
+      <p class="muted small">In code: <code id="code-np"></code> or <code id="code-torch"></code>. The numbers here are small random whole numbers, just to show what happens.</p>
+    </section>
+
+    <section class="tutorial" id="tutorial" aria-labelledby="tutorial-title">
+      <h2 id="tutorial-title">Einsum from zero</h2>
+      <p class="prose">Every “Try it” button loads the example into the explorer above, so you can click around in it.</p>
+
+      <article class="card lesson">
+        <h3>1. Letters name the axes</h3>
+        <p>A matrix <code>A</code> has two axes. Writing <code>ij</code> just gives them names: <code>i</code> for rows, <code>j</code> for columns, so an entry is <code>A[i, j]</code>. The letters themselves don't matter; <code>ab</code> or <code>xy</code> would mean the same thing.</p>
+        <p>After the arrow <code>-></code> you write which axes the result has, in which order. <code>ij->ij</code> changes nothing. <code>ij->ji</code> swaps the order, so the result is the transpose: <code>out[j, i] = A[i, j]</code>.</p>
+        <p class="try"><button class="button button--small" type="button" data-eq="ij->ij">Try ij->ij</button> <button class="button button--small" type="button" data-eq="ij->ji">Try ij->ji</button></p>
+      </article>
+
+      <article class="card lesson">
+        <h3>2. Leave a letter out to add it up</h3>
+        <p>A letter that's in an input but <strong>not in the output</strong> is summed over. <code>ij->i</code> keeps <code>i</code> and drops <code>j</code>, so each row is added up: one number per row. <code>ij->j</code> adds up each column. <code>ij-></code> (nothing after the arrow) adds up everything into one number.</p>
+        <p class="try"><button class="button button--small" type="button" data-eq="ij->i">Try ij->i</button> <button class="button button--small" type="button" data-eq="ij->j">Try ij->j</button> <button class="button button--small" type="button" data-eq="ij->">Try ij-></button></p>
+      </article>
+
+      <article class="card lesson">
+        <h3>3. Share a letter to multiply along it</h3>
+        <p>With two inputs, the entries are multiplied. A letter in <strong>both</strong> inputs lines them up: <code>i,i->i</code> multiplies <code>A[0]·B[0]</code>, <code>A[1]·B[1]</code> and so on, element by element.</p>
+        <p>Now combine it with rule 2: in <code>i,i-></code>, <code>i</code> is shared <em>and</em> missing from the output, so the products are added up. That's the dot product.</p>
+        <p>With <strong>no</strong> shared letter, every entry meets every other: <code>i,j->ij</code> is the outer product, <code>out[i, j] = A[i]·B[j]</code>.</p>
+        <p class="try"><button class="button button--small" type="button" data-eq="i,i->i">Try i,i->i</button> <button class="button button--small" type="button" data-eq="i,i->">Try i,i-></button> <button class="button button--small" type="button" data-eq="i,j->ij">Try i,j->ij</button></p>
+      </article>
+
+      <article class="card lesson">
+        <h3>4. Matrix multiplication</h3>
+        <p><code>ij,jk->ik</code>: <code>j</code> is shared, so <code>A[i, j]</code> and <code>B[j, k]</code> are multiplied for matching <code>j</code>; <code>j</code> is missing from the output, so those products are added up. That is exactly the definition of <code>A @ B</code>: row <code>i</code> of A against column <code>k</code> of B.</p>
+        <p>Because you name the axes, you never have to transpose first: <code>ij,kj->ik</code> is <code>A @ B.T</code>, and <code>ji,jk->ik</code> is <code>A.T @ B</code>.</p>
+        <p class="try"><button class="button button--small" type="button" data-eq="ij,jk->ik">Try ij,jk->ik</button> <button class="button button--small" type="button" data-eq="ij,kj->ik">Try ij,kj->ik</button></p>
+      </article>
+
+      <article class="card lesson">
+        <h3>5. Batch letters</h3>
+        <p>A letter that's in every input <strong>and</strong> the output is paired up but not added: each value of it gets its own result. In <code>bij,bjk->bik</code>, <code>b</code> is the batch, so this is one matrix multiplication per batch entry (like <code>torch.bmm</code>).</p>
+        <p>Drop <code>b</code> from the output, <code>bij,bjk->ik</code>, and the batch results are added together instead.</p>
+        <p class="try"><button class="button button--small" type="button" data-eq="bij,bjk->bik">Try bij,bjk->bik</button> <button class="button button--small" type="button" data-eq="bij,bjk->ik">Try bij,bjk->ik</button></p>
+      </article>
+
+      <article class="card lesson">
+        <h3>6. Four, five, six letters: sort them, don't read them</h3>
+        <p>Long equations are hard because you try to read them left to right. Instead, ask each letter two questions: <strong>is it in one input or both?</strong> and <strong>is it in the output?</strong> The answers put every letter in one of four groups, and the groups say everything:</p>
+        <div class="table-wrap">
+          <table class="cheat groups-table">
+            <thead><tr><th scope="col">The letter is…</th><th scope="col">Group</th><th scope="col">What happens</th></tr></thead>
+            <tbody>
+              <tr><td>in both inputs and the output</td><td><strong>batch</strong></td><td>paired up; each value gets its own separate result</td></tr>
+              <tr><td>in one input and the output</td><td><strong>rows</strong> (from A) or <strong>columns</strong> (from B)</td><td>carried through to the output</td></tr>
+              <tr><td>in both inputs, not the output</td><td><strong>contracted</strong></td><td>multiplied along, then added up</td></tr>
+              <tr><td>in one input, not the output</td><td><strong>summed</strong></td><td>added up inside that input first</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Then the whole equation is one <strong>batched matrix multiplication</strong>: for each batch value, (rows × contracted) @ (contracted × columns). It doesn't matter how many letters a group has; several letters in one group act like one long axis. The output is then just its letters in the order written after the arrow.</p>
+        <p>Take <code>abcd,cdef->abef</code>. <code>c</code> and <code>d</code> are in both inputs but not the output: contracted. <code>a</code>, <code>b</code> come only from A: rows. <code>e</code>, <code>f</code> only from B: columns. So it's a (a·b) × (c·d) matrix times a (c·d) × (e·f) matrix. That's <code>np.tensordot(A, B, axes=2)</code>.</p>
+        <p>A habit that helps with real code: write each input's shape under its letters (<code>b h q d</code> over <code>32 8 128 64</code>), check that every letter has one size everywhere, then sort the letters. For any two-input equation, the explorer shows this sorting under the formula, plus the same computation written with <code>transpose</code>, <code>reshape</code> and <code>@</code>.</p>
+        <p class="try"><button class="button button--small" type="button" data-eq="abcd,cdef->abef">Try abcd,cdef->abef</button> <button class="button button--small" type="button" data-eq="abcd,cdef->fbea">Try abcd,cdef->fbea</button></p>
+      </article>
+
+      <article class="card lesson">
+        <h3>7. Worked example: attention</h3>
+        <p>In a transformer, queries and keys have shape (batch, heads, tokens, features). Name them <code>b h q d</code> and <code>b h k d</code>: <code>q</code> and <code>k</code> are both tokens, but they get different letters because they're separate axes of the result.</p>
+        <ul>
+          <li><code>bhqd,bhkd->bhqk</code> gives the attention scores. <code>b</code>, <code>h</code>: batch. <code>q</code>: rows (only in Q). <code>k</code>: columns (only in K). <code>d</code>: contracted. So for every batch and head, Q (q × d) @ Kᵀ (d × k). No transpose needed: the letters already say which axis lines up with which.</li>
+          <li><code>bhqk,bhkd->bhqd</code> applies the weights to the values. Now <code>k</code> is the contracted letter, and <code>d</code> comes only from V.</li>
+          <li><code>bhqd->bqhd</code> just moves the heads axis next to the features, ready to merge the heads with a reshape.</li>
+        </ul>
+        <p>A common mistake is using the same letter for both token axes: <code>bhtd,bhtd->bhtt</code> is an error (a letter can't appear twice in the output), and <code>bhtd,bhtd->bht</code> pairs each token only with itself. If two axes have the same size but play different parts, give them different letters.</p>
+        <p class="try"><button class="button button--small" type="button" data-eq="bhqd,bhkd->bhqk">Try bhqd,bhkd->bhqk</button> <button class="button button--small" type="button" data-eq="bhqk,bhkd->bhqd">Try bhqk,bhkd->bhqd</button> <button class="button button--small" type="button" data-eq="bhqd->bqhd">Try bhqd->bqhd</button></p>
+      </article>
+
+      <article class="card lesson">
+        <h3>8. Three or more inputs</h3>
+        <p>With more inputs, every product still multiplies one entry from each input, and the same rules decide what's kept and what's added. To understand one, combine the inputs two at a time: <code>ij,jk,kl->il</code> is <code>ij,jk->ik</code> (j used up), then <code>ik,kl->il</code> (k used up). A letter can be added up as soon as no remaining input uses it.</p>
+        <p>The order you pick changes the speed, not the answer; that's what <code>optimize=True</code> in NumPy is for.</p>
+        <p class="try"><button class="button button--small" type="button" data-eq="ij,jk,kl->il">Try ij,jk,kl->il</button> <button class="button button--small" type="button" data-eq="i,ij,j->">Try i,ij,j-></button></p>
+      </article>
+
+      <article class="card lesson">
+        <h3>9. The same letter twice in one input</h3>
+        <p><code>ii</code> means “row and column are the same”, so only the diagonal entries <code>A[0, 0]</code>, <code>A[1, 1]</code>… are used. The matrix must be square. <code>ii->i</code> takes the diagonal; <code>ii-></code> adds it up, which is the trace.</p>
+        <p class="try"><button class="button button--small" type="button" data-eq="ii->i">Try ii->i</button> <button class="button button--small" type="button" data-eq="ii->">Try ii-></button></p>
+      </article>
+
+      <article class="card lesson">
+        <h3>10. Leaving out the arrow (and why not to)</h3>
+        <p>Without <code>-></code>, the output is the letters that appear exactly once, in alphabetical order. So <code>ij,jk</code> means <code>ij,jk->ik</code>.</p>
+        <p>The catch: <code>ji</code> on its own becomes <code>ji->ij</code>, which <strong>transposes</strong>, even though it looks like it shouldn't change anything. Writing the arrow every time avoids surprises.</p>
+        <p class="try"><button class="button button--small" type="button" data-eq="ij,jk">Try ij,jk</button> <button class="button button--small" type="button" data-eq="ji">Try ji</button></p>
+      </article>
+
+      <article class="card lesson">
+        <h3>11. “...” for any number of leading axes</h3>
+        <p><code>...ij,...jk->...ik</code> means “matrix-multiply the last two axes, and treat everything before them as batch axes”, however many there are. Those batch axes broadcast like they do with <code>@</code>. The explorer above can't draw “...” (it could be any number of axes), but the <a href="../tensor-shapes/index.html">Tensor Shape Visualizer</a> works out the shapes it gives in real code.</p>
+      </article>
+
+      <article class="card lesson">
+        <h3>12. In NumPy and PyTorch</h3>
+        <ul>
+          <li><code>np.einsum("ij,jk->ik", A, B)</code> and <code>torch.einsum("ij,jk->ik", A, B)</code> use the same notation.</li>
+          <li>One comma-separated term per input, in order, and one letter per axis of that input.</li>
+          <li>A letter means the same size everywhere it appears; if <code>j</code> is 3 in A, it must be 3 in B too.</li>
+          <li>With three or more inputs, the order in which pairs are multiplied can change the speed a lot. NumPy picks a good order with <code>optimize=True</code>; PyTorch does it when the <code>opt_einsum</code> package is installed.</li>
+        </ul>
+      </article>
+
+      <section class="card" aria-labelledby="cheat-title">
+        <h3 id="cheat-title">Cheat sheet</h3>
+        <div class="table-wrap">
+          <table class="cheat">
+            <thead><tr><th scope="col">Equation</th><th scope="col">What it does</th><th scope="col">Same as</th><th scope="col"><span class="visually-hidden">Try</span></th></tr></thead>
+            <tbody id="cheat"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

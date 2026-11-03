@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Budget &amp; Runway Planner</title>
+  <meta name="description" content="Free, private budget planner: monthly budget, how long your savings last if income stops, debt payoff plans and savings goals. Fill it in from bank statements without uploading them anywhere.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="../../shared/zip.js"></script>
+  <script defer src="../../shared/sheet.js"></script>
+  <script defer src="../../shared/pdfjs.js"></script>
+  <script defer src="calc.js"></script>
+  <script defer src="statements.js"></script>
+  <script defer src="app.js"></script>
+  <script defer src="import.js"></script>
+</head>
+<body data-page-title="Budget &amp; Runway Planner">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Budget &amp; Runway Planner</h1>
+      <p class="lead">See where your money goes, how long your savings would last without a paycheck, how to clear debts, and what to save for your goals.</p>
+      <p class="notice small">
+        <strong>Your numbers, your device.</strong> Everything you enter, including bank statements, stays in this browser.
+        This is a calculator, not financial advice: results are only as good as the numbers you put in.
+      </p>
+    </section>
+
+    <p id="storage-warning" class="notice notice--warning" hidden>
+      Your browser is blocking storage (this often happens in private windows), so your budget won't be saved when you close this page.
+    </p>
+
+    <div class="settings">
+      <div class="field">
+        <label for="currency">Currency</label>
+        <select id="currency"></select>
+      </div>
+      <div class="settings__actions">
+        <button id="example" class="button button--small button--ghost" type="button">Try an example</button>
+        <button id="export" class="button button--small button--ghost" type="button">Download backup</button>
+        <button id="import-backup" class="button button--small button--ghost" type="button">Restore backup</button>
+        <input id="import-backup-file" type="file" accept=".json,application/json" hidden>
+        <button id="clear" class="button button--small button--danger" type="button">Clear all</button>
+      </div>
+    </div>
+
+    <section id="summary" class="summary" aria-label="Summary"></section>
+
+    <!-- Bank statements: built by import.js -->
+    <details id="statements" class="card statements">
+      <summary>Fill in spending from bank statements <span class="badge">Optional</span></summary>
+      <div id="statements-body"></div>
+    </details>
+
+    <section class="card block" aria-labelledby="income-title">
+      <div class="block__head">
+        <h2 id="income-title">Money coming in</h2>
+        <p class="muted small" id="income-total"></p>
+      </div>
+      <div id="list-income" class="rows"></div>
+      <button class="button button--small button--ghost add" type="button" data-add="income">Add income</button>
+    </section>
+
+    <section class="card block" aria-labelledby="expenses-title" id="spending">
+      <div class="block__head">
+        <h2 id="expenses-title">Spending</h2>
+        <p class="muted small" id="expenses-total"></p>
+      </div>
+      <p class="muted small">Mark what you couldn't cut, even in a tight month, as <em>essential</em>.</p>
+      <div id="list-expenses" class="rows"></div>
+      <button class="button button--small button--ghost add" type="button" data-add="expenses">Add spending</button>
+      <div id="donut" class="donut"></div>
+      <div id="categories" class="categories"></div>
+    </section>
+
+    <section class="card block" aria-labelledby="runway-title">
+      <div class="block__head">
+        <h2 id="runway-title">Runway: if your paycheck stopped</h2>
+      </div>
+      <div class="inline-fields">
+        <div class="field">
+          <label for="savings">Savings you could use</label>
+          <input id="savings" inputmode="decimal" placeholder="e.g. 12000" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="extra-cash">One-off money coming</label>
+          <input id="extra-cash" inputmode="decimal" placeholder="e.g. severance" autocomplete="off">
+        </div>
+      </div>
+      <p class="muted small">Income marked “keeps coming” above (like a partner's pay or benefits) is counted; the rest stops.</p>
+      <div id="runway"></div>
+    </section>
+
+    <section class="card block" aria-labelledby="debts-title">
+      <div class="block__head">
+        <h2 id="debts-title">Debts</h2>
+        <p class="muted small" id="debts-total"></p>
+      </div>
+      <div id="list-debts" class="rows"></div>
+      <button class="button button--small button--ghost add" type="button" data-add="debts">Add a debt</button>
+      <div class="inline-fields">
+        <div class="field">
+          <label for="debt-extra">Extra you can pay each month, on top of minimums</label>
+          <input id="debt-extra" inputmode="decimal" placeholder="e.g. 200" autocomplete="off">
+        </div>
+      </div>
+      <div id="payoff"></div>
+    </section>
+
+    <section class="card block" aria-labelledby="goals-title">
+      <div class="block__head">
+        <h2 id="goals-title">Savings goals</h2>
+      </div>
+      <div id="list-goals" class="rows"></div>
+      <button class="button button--small button--ghost add" type="button" data-add="goals">Add a goal</button>
+      <div id="goal-results"></div>
+    </section>
+
+    <details class="assumptions">
+      <summary>How this is calculated</summary>
+      <ul>
+        <li>Every amount is turned into a monthly figure: weekly × 52 ÷ 12, every two weeks × 26 ÷ 12, yearly ÷ 12.</li>
+        <li>Spending includes the minimum payments on your debts.</li>
+        <li>Runway: your savings plus one-off money, shrinking each month by spending minus the income that keeps coming. No interest on savings, no price changes, no taxes on one-off money.</li>
+        <li>Debts: interest is charged monthly (yearly rate ÷ 12), then payments are made. Minimums are paid on every debt; extra money goes to one debt at a time, and a cleared debt's payment rolls on to the next. Fees, rate changes and new borrowing aren't included.</li>
+        <li>Goals: what's left to save, split evenly over the months until the date. No interest is assumed.</li>
+        <li>From statements: the total spent in each category, divided by the number of months the statements cover.</li>
+      </ul>
+    </details>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Image Toolkit</title>
+  <meta name="description" content="Free, private image tool: crop, rotate, resize, convert and compress images, see and remove hidden photo data like GPS location, and make a transparent signature image. Nothing is uploaded.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="exif.js"></script>
+  <script defer src="common.js"></script>
+  <script defer src="editor.js"></script>
+  <script defer src="signature.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Image Toolkit">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Image Toolkit</h1>
+      <p class="lead">Crop, rotate, resize, convert and shrink images, or make a clean signature image.</p>
+      <p class="muted small">Everything happens on your device. Images are never uploaded, and nothing is saved after you close the page.</p>
+    </section>
+
+    <nav class="tabs" role="tablist" aria-label="Tools">
+      <a id="tab-edit" class="tab" role="tab" href="#edit" aria-controls="panel-edit">Edit an image</a>
+      <a id="tab-signature" class="tab" role="tab" href="#signature" aria-controls="panel-signature">Make a signature</a>
+    </nav>
+
+    <!-- ---------- Edit an image ---------- -->
+    <section id="panel-edit" class="panel" role="tabpanel" aria-labelledby="tab-edit">
+      <div id="ed-drop" class="drop">
+        <p class="drop__title">Drop an image here</p>
+        <p class="muted small">or</p>
+        <button id="ed-choose" class="button" type="button">Choose an image</button>
+        <input id="ed-file" type="file" accept="image/*" hidden>
+        <p class="muted small">JPEG, PNG, WebP or GIF (first frame).</p>
+      </div>
+      <p id="ed-message" class="message" role="status" hidden></p>
+
+      <div id="ed-work" class="ed-layout" hidden>
+        <div class="card ed-main">
+          <div class="stage-wrap">
+            <div id="ed-stage" class="stage">
+              <canvas id="ed-canvas"></canvas>
+              <div id="ed-crop" class="crop" data-handle="move" aria-hidden="true">
+                <span class="handle nw" data-handle="nw"></span>
+                <span class="handle ne" data-handle="ne"></span>
+                <span class="handle sw" data-handle="sw"></span>
+                <span class="handle se" data-handle="se"></span>
+              </div>
+            </div>
+          </div>
+          <div class="stage-tools">
+            <button id="ed-rotate-left" class="button button--small button--ghost" type="button" aria-label="Rotate left" title="Rotate left">↺</button>
+            <button id="ed-rotate-right" class="button button--small button--ghost" type="button" aria-label="Rotate right" title="Rotate right">↻</button>
+            <button id="ed-flip-h" class="button button--small button--ghost" type="button" aria-label="Flip left to right" title="Flip left to right">⇆</button>
+            <button id="ed-flip-v" class="button button--small button--ghost" type="button" aria-label="Flip upside down" title="Flip upside down">⇅</button>
+            <label for="ed-aspect" class="inline-label">Crop</label>
+            <select id="ed-aspect">
+              <option value="none">No crop</option>
+              <option value="free">Free</option>
+              <option value="1">Square (profile photo)</option>
+              <option value="1.3333">4:3</option>
+              <option value="0.75">3:4</option>
+              <option value="1.5">3:2</option>
+              <option value="1.7778">16:9</option>
+            </select>
+          </div>
+          <p class="muted small stage-hint" id="ed-crop-hint" hidden>Drag the box to move it, or a corner to resize it.</p>
+        </div>
+
+        <div class="ed-side">
+          <div id="ed-meta" class="card meta" hidden></div>
+
+          <div class="card">
+            <h2 class="card-title">Size</h2>
+            <div class="size-row">
+              <div class="field"><label for="ed-width">Width (px)</label><input id="ed-width" type="number" min="1" inputmode="numeric"></div>
+              <span aria-hidden="true">×</span>
+              <div class="field"><label for="ed-height">Height (px)</label><input id="ed-height" type="number" min="1" inputmode="numeric"></div>
+            </div>
+            <div class="quick">
+              <button class="button button--small button--ghost" type="button" data-scale="1">100%</button>
+              <button class="button button--small button--ghost" type="button" data-scale="0.75">75%</button>
+              <button class="button button--small button--ghost" type="button" data-scale="0.5">50%</button>
+              <button class="button button--small button--ghost" type="button" data-scale="0.25">25%</button>
+            </div>
+            <p id="ed-size-note" class="muted small" hidden></p>
+          </div>
+
+          <div class="card">
+            <h2 class="card-title">Save as</h2>
+            <div class="field">
+              <label for="ed-format">Format</label>
+              <select id="ed-format">
+                <option value="image/jpeg">JPEG: photos, small files</option>
+                <option value="image/png">PNG: sharp edges, keeps transparency</option>
+                <option value="image/webp">WebP: small files, modern browsers</option>
+              </select>
+            </div>
+            <div id="ed-quality-row" class="field">
+              <label for="ed-quality">Quality: <span id="ed-quality-value"></span></label>
+              <input id="ed-quality" type="range" min="10" max="100" step="1">
+            </div>
+            <div class="target">
+              <label for="ed-target">Make it smaller than</label>
+              <div class="target__row">
+                <input id="ed-target" type="number" min="5" inputmode="numeric" placeholder="e.g. 500">
+                <span>KB</span>
+                <button id="ed-fit" class="button button--small button--ghost" type="button">Fit</button>
+              </div>
+              <p id="ed-target-note" class="small muted" role="status"></p>
+            </div>
+          </div>
+
+          <div class="card result">
+            <h2 class="card-title">Result</h2>
+            <p id="ed-result-info" class="small" role="status"></p>
+            <img id="ed-result" alt="Preview of the result">
+            <div class="result__actions">
+              <button id="ed-download" class="button" type="button">Download</button>
+              <button id="ed-reset" class="button button--small button--ghost" type="button">Undo all changes</button>
+              <button id="ed-new" class="button button--small button--ghost" type="button">Open another image</button>
+            </div>
+            <p class="muted small">The image is redrawn from its pixels, so the download never includes the original's hidden data.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- Make a signature ---------- -->
+    <section id="panel-signature" class="panel" role="tabpanel" aria-labelledby="tab-signature" hidden>
+      <div class="sig-modes" role="group" aria-label="How to make it">
+        <button class="sig-mode" type="button" data-mode="draw" aria-pressed="true">Draw it</button>
+        <button class="sig-mode" type="button" data-mode="type" aria-pressed="false">Type it</button>
+        <button class="sig-mode" type="button" data-mode="photo" aria-pressed="false">From a photo</button>
+      </div>
+
+      <div class="card sig-card">
+        <div id="sig-draw">
+          <canvas id="sig-pad" class="sig-pad" aria-label="Signature drawing area"></canvas>
+          <div class="sig-tools">
+            <label for="sig-pen" class="inline-label">Pen</label>
+            <select id="sig-pen">
+              <option value="2">Fine</option>
+              <option value="3" selected>Medium</option>
+              <option value="5">Bold</option>
+            </select>
+            <button id="sig-undo" class="button button--small button--ghost" type="button">Undo stroke</button>
+            <button id="sig-clear" class="button button--small button--ghost" type="button">Clear</button>
+          </div>
+          <p class="muted small">Sign with your mouse, finger or a stylus.</p>
+        </div>
+
+        <div id="sig-type" hidden>
+          <div class="field">
+            <label for="sig-name">Your name</label>
+            <input id="sig-name" autocomplete="name" maxlength="60" placeholder="Type your name">
+          </div>
+          <p class="small sig-fonts-label">Style</p>
+          <div id="sig-fonts" class="sig-fonts" role="radiogroup" aria-label="Signature style"></div>
+          <p class="muted small">These styles use handwriting fonts already on your device, so the choice differs between computers and phones.</p>
+        </div>
+
+        <div id="sig-photo" hidden>
+          <button id="sig-photo-choose" class="button button--small" type="button">Choose a photo of your signature</button>
+          <input id="sig-photo-file" type="file" accept="image/*" hidden>
+          <p class="muted small">Sign on plain white paper with a dark pen, then take a straight, well-lit photo of just the signature.</p>
+          <div id="sig-photo-controls" class="field" hidden>
+            <label for="sig-threshold">Remove paper: <span id="sig-threshold-value"></span></label>
+            <input id="sig-threshold" type="range" min="60" max="245" step="1" value="170">
+            <p class="muted small">Move it right if paper shows, left if parts of the ink disappear.</p>
+          </div>
+          <p id="sig-photo-message" class="small" role="status" hidden></p>
+        </div>
+
+        <div class="sig-tools">
+          <label for="sig-color" class="inline-label">Ink</label>
+          <select id="sig-color">
+            <option value="#111111">Black</option>
+            <option value="#1a3a8f">Dark blue</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card sig-result">
+        <h2 class="card-title">Your signature</h2>
+        <div class="checker"><img id="sig-preview" alt="Preview of your signature with a transparent background" hidden><p id="sig-empty" class="muted small">Nothing yet.</p></div>
+        <div class="result__actions">
+          <button id="sig-download" class="button" type="button">Download PNG</button>
+          <button id="sig-copy" class="button button--small button--ghost" type="button">Copy image</button>
+          <span id="sig-status" class="small muted" role="status"></span>
+        </div>
+        <p class="muted small">
+          A transparent PNG you can place on documents. A signature image isn't a verified e-signature:
+          whether it's accepted is up to whoever asks you to sign.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

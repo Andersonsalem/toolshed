@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fitness Log</title>
+  <meta name="description" content="Free, private workout log and food diary: plan and track workouts on a calendar, log meals from a USDA food list. No account, no ads, data stays on your device.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="data.js"></script>
+  <script defer src="day.js"></script>
+  <script defer src="calendar.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Fitness Log">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Fitness Log</h1>
+      <p class="lead">Plan and track your workouts, and keep a simple food diary. No account, no ads, and nothing leaves your device.</p>
+      <p class="notice small">
+        This is a diary, not medical advice. It doesn't set calorie targets for you: everyone's needs differ,
+        so if you want a personal target, ask a doctor or registered dietitian. If tracking food starts to feel stressful, it's fine to stop.
+      </p>
+    </section>
+
+    <p id="storage-warning" class="notice notice--warning" hidden>
+      Your browser is blocking storage (this often happens in private windows), so your log won't be saved when you close this page.
+    </p>
+    <p id="save-error" class="notice notice--warning" role="alert" hidden>
+      Your last change couldn't be saved: your browser's storage may be full. Download a backup below so you don't lose anything.
+    </p>
+
+    <nav class="tabs" role="tablist" aria-label="Views">
+      <button class="tab" role="tab" type="button" data-view="day" aria-selected="true">Day</button>
+      <button class="tab" role="tab" type="button" data-view="calendar" aria-selected="false">Calendar</button>
+      <button class="tab" role="tab" type="button" data-view="progress" aria-selected="false">Progress</button>
+      <button class="tab" role="tab" type="button" data-view="settings" aria-selected="false">Settings &amp; backup</button>
+    </nav>
+
+    <section id="view-day" class="view"></section>
+    <section id="view-calendar" class="view" hidden></section>
+    <section id="view-progress" class="view" hidden></section>
+
+    <section id="view-settings" class="view" hidden>
+      <div class="card">
+        <h2 class="card-title">Units</h2>
+        <div class="inline-fields">
+          <div class="field"><label for="unit-distance">Distance</label><select id="unit-distance"><option value="km">Kilometres</option><option value="mi">Miles</option></select></div>
+          <div class="field"><label for="unit-weight">Weights lifted</label><select id="unit-weight"><option value="kg">Kilograms</option><option value="lb">Pounds</option></select></div>
+        </div>
+        <p class="muted small">Changing units relabels what you've logged; it doesn't convert numbers you've already entered.</p>
+      </div>
+      <div class="card">
+        <h2 class="card-title">Daily calories (optional)</h2>
+        <div class="inline-fields">
+          <div class="field"><label for="target">A daily number you've chosen</label><input id="target" type="number" min="0" max="20000" step="50" inputmode="numeric" placeholder="Leave empty for none"></div>
+        </div>
+        <p class="muted small">If you set one, the day view shows your total next to it, nothing more. This page won't suggest a number.</p>
+      </div>
+      <div class="card">
+        <h2 class="card-title">Backup and data</h2>
+        <p class="muted small">Your log lives only in this browser. A backup file lets you restore it here or on another device.</p>
+        <div class="actions">
+          <button id="backup" class="button button--ghost" type="button">Download backup (.json)</button>
+          <button id="restore" class="button button--ghost" type="button">Restore from backup</button>
+          <input id="restore-file" type="file" accept=".json,application/json" hidden>
+          <button id="csv-workouts" class="button button--ghost" type="button">Workouts as spreadsheet (.csv)</button>
+          <button id="csv-foods" class="button button--ghost" type="button">Food diary as spreadsheet (.csv)</button>
+          <button id="delete-all" class="button button--danger" type="button">Delete everything</button>
+        </div>
+        <p id="data-status" class="small muted" role="status"></p>
+      </div>
+      <p class="muted small">
+        Food values come from the USDA FoodData Central “SR Legacy” database (public domain, 2018): generic foods per 100 g.
+        Branded products and home recipes can differ; use “Add something not on the list” for those.
+      </p>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

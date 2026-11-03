@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Message Templates</title>
+  <meta name="description" content="Free fill-in-the-blank message templates: job follow-ups, thank-you notes, offers, networking, resignation, refunds and more. Copy or open in your email app.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="../../shared/zip.js"></script>
+  <script defer src="templates.js"></script>
+  <script defer src="../../shared/sheet.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Message Templates">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Message Templates</h1>
+      <p class="lead">Fill in the blanks, check the preview, and copy it or open it in your email app.</p>
+      <p class="muted small">
+        Written by a person, not generated. They're starting points: change the wording so it sounds like you.
+        What you type is saved only in this browser.
+      </p>
+    </section>
+
+    <p id="storage-warning" class="notice notice--warning" hidden>
+      Your browser is blocking storage (this often happens in private windows), so your details and templates won't be saved when you close this page.
+    </p>
+
+    <div class="layout">
+      <nav class="card picker" aria-label="Templates">
+        <label for="search" class="visually-hidden">Search templates</label>
+        <input id="search" type="search" placeholder="Search templates…" autocomplete="off">
+        <div id="template-list"></div>
+        <button id="new-template" class="button button--small button--ghost new-template" type="button">New template of my own</button>
+        <div class="library" aria-label="Your templates">
+          <p class="muted small">Your own templates</p>
+          <button id="export-json" class="button button--small button--ghost" type="button" title="A backup file you can import again, here or in another browser">Download backup</button>
+          <button id="export-text" class="button button--small button--ghost" type="button" title="All your templates in one readable text file">Download as text</button>
+          <button id="import-button" class="button button--small button--ghost" type="button">Import a backup</button>
+          <input id="import-file" type="file" accept=".json,application/json" hidden>
+        </div>
+      </nav>
+
+      <section id="editor" class="editor" aria-live="polite"></section>
+    </div>
+
+    <details class="card details-card" id="details-card">
+      <summary>Your details <span class="muted small">(name, email… filled into every template)</span></summary>
+      <div id="my-details" class="fields"></div>
+      <div class="details-actions">
+        <button id="clear-values" class="button button--small button--danger" type="button">Clear everything I've typed</button>
+      </div>
+    </details>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Toolshed</title>
+  <meta name="description" content="Free tools that run in your browser. No ads, no tracking, no accounts.">
+  <link rel="icon" href="shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="shared/base.css">
+  <link rel="stylesheet" href="hub.css">
+  <script defer src="shared/config.js"></script>
+  <script defer src="shared/registry.js"></script>
+  <script defer src="shared/layout.js"></script>
+  <script defer src="hub.js"></script>
+</head>
+<body>
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="hero">
+      <h1 data-site-name>Toolshed</h1>
+      <p class="lead" data-site-tagline></p>
+    </section>
+
+    <section class="deal" aria-label="How this site works">
+      <div class="deal__item">
+        <h3>Free, all of it</h3>
+        <p class="muted">Every feature works for everyone. Nothing is locked, there's no trial, and there's no "pro" version.</p>
+      </div>
+      <div class="deal__item">
+        <h3>Private by design</h3>
+        <p class="muted">Most tools run entirely on your device: what you type or open isn't uploaded. The few that need outside data, like weather, say so and send only what's needed. No analytics, no cookies, no third-party scripts.</p>
+      </div>
+      <div class="deal__item">
+        <h3>Built by a job seeker</h3>
+        <p class="muted">I'm building these while I look for work.
+          <span data-if-support hidden>If one helps you, you can <a data-support-link href="#" target="_blank" rel="noopener">chip in</a>. It's optional and gets you nothing extra.</span>
+          <span data-if-no-support>There's no way to pay yet, and you'll never need to.</span>
+        </p>
+      </div>
+    </section>
+
+    <noscript>
+      <p class="notice notice--warning">These tools need JavaScript to run. It all runs on your device; nothing is sent to a server.</p>
+    </noscript>
+
+    <div id="app-list"></div>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

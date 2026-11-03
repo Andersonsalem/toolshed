@@ -1,0 +1,158 @@
+/* Fitness Log only. */
+
+.tool-intro { padding: 40px 0 8px; }
+.small { font-size: 0.9rem; }
+.card-title { margin: 0; font-size: 1.1rem; }
+.is-error { color: var(--danger); font-weight: 600; }
+.card + .card { margin-top: 16px; }
+.view { margin-top: 16px; }
+
+.tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 20px; border-bottom: 1px solid var(--border); }
+.tab {
+  padding: 10px 14px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: var(--radius-small) var(--radius-small) 0 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tab[aria-selected="true"] { margin-bottom: -1px; border-color: var(--border); background: var(--bg); color: var(--text); }
+
+.card-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; margin-bottom: 12px; }
+.row-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.inline-fields { display: flex; flex-wrap: wrap; gap: 12px; }
+.inline-fields .field { flex: 1 1 200px; }
+.link-button { padding: 0 !important; min-height: 0 !important; border: 0 !important; background: none !important; color: var(--accent) !important; text-decoration: underline; font-weight: 400 !important; }
+.icon-button { width: 30px; height: 30px; border: 0; border-radius: 50%; background: transparent; color: var(--muted); font: inherit; cursor: pointer; }
+.icon-button:hover { background: var(--surface-2); color: var(--danger); }
+
+/* ---------- Day ---------- */
+
+.date-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.date-bar__title { flex: 1 1 200px; }
+.date-bar h2 { margin: 0; font-size: 1.25rem; }
+.date-bar input[type="date"] { width: auto; min-height: 34px; }
+.date-bar .button { min-width: 36px; }
+
+.day-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; align-items: start; }
+.day-grid .card + .card { margin-top: 0; }
+@media (max-width: 860px) {
+  .day-grid { grid-template-columns: 1fr; }
+}
+
+.workouts { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 10px; }
+.workout { padding: 10px 12px; border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: var(--radius-small); }
+.workout--planned { border-left-style: dashed; border-left-color: var(--muted); }
+.workout__head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.workout__notes { margin: 6px 0 0; font-size: 0.9rem; color: var(--muted); white-space: pre-line; }
+.exercises { margin: 6px 0 0; padding-left: 1.2em; font-size: 0.9rem; }
+
+.workout-form, .quick { display: grid; gap: 10px; margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--border); }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.form-grid .wide, .field.wide { grid-column: 1 / -1; }
+.workout-form label, .quick label { font-size: 0.85rem; }
+.check-row { display: flex; align-items: center; gap: 8px; }
+.check-row input { width: 20px; height: 20px; }
+.check-row label { margin: 0; font-weight: 400; }
+.ex-title { margin: 0; font-weight: 600; font-size: 0.85rem; }
+.ex-box { display: grid; gap: 6px; }
+.ex-row { display: grid; grid-template-columns: 2fr 0.8fr 0.8fr 1fr 34px; gap: 6px; }
+.ex-row .button { min-height: 40px; padding: 0; }
+@media (max-width: 480px) {
+  .ex-row { grid-template-columns: 1fr 1fr 1fr 34px; }
+  .ex-row input:first-child { grid-column: 1 / -1; }
+}
+
+.totals p { margin: 0; }
+.totals__kcal { font-size: 1.1rem; }
+.totals__kcal strong { font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+.meter { height: 8px; margin-top: 8px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.meter > span { display: block; height: 100%; background: var(--accent); }
+
+.meals { display: grid; gap: 12px; margin: 14px 0; }
+.meal__head { display: flex; justify-content: space-between; gap: 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+.entries { list-style: none; margin: 4px 0 0; padding: 0; }
+.entries li { display: grid; grid-template-columns: 1fr auto 30px; gap: 8px; align-items: center; padding: 4px 0; font-size: 0.92rem; }
+.entry__name { overflow-wrap: anywhere; }
+.entry__kcal { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.food-form { display: grid; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.food-form p { margin: 0; }
+.food-top { display: flex; align-items: center; gap: 8px; }
+.food-top select { width: auto; min-height: 34px; }
+.food-results { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; max-height: 320px; overflow: auto; }
+.food-results button {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+}
+.food-results button:hover { border-color: var(--accent); }
+.food-results button .muted { white-space: nowrap; font-size: 0.82rem; }
+.chosen { display: grid; gap: 8px; padding: 10px 12px; border: 1px solid var(--accent); border-radius: var(--radius-small); }
+.amount-row { display: grid; grid-template-columns: 90px 1fr; gap: 8px; }
+.recent { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.chip-button { border-radius: 999px !important; font-weight: 400 !important; font-size: 0.82rem !important; border-color: var(--border) !important; color: var(--text) !important; background: var(--surface) !important; }
+
+/* ---------- Calendar ---------- */
+
+.cal-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.cal-head h2 { margin: 0; font-size: 1.2rem; }
+.cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin-top: 12px; }
+.cal__dow { text-align: center; font-size: 0.78rem; color: var(--muted); font-weight: 600; }
+.cal__day {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 72px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.cal__day:hover { border-color: var(--accent); }
+.cal__day--empty { border: 0; background: transparent; cursor: default; }
+.cal__day.is-today { border-color: var(--accent); border-width: 2px; }
+.cal__day.is-selected { background: var(--accent-soft); }
+.cal__num { font-weight: 700; font-size: 0.9rem; }
+.cal__marks { display: flex; flex-wrap: wrap; gap: 3px; align-content: start; padding-top: 4px; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+.dot--planned { background: transparent; border: 2px solid var(--muted); }
+.cal__kcal { font-size: 0.72rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+@media (max-width: 480px) {
+  .cal__day { min-height: 54px; padding: 4px; }
+  .cal__kcal { display: none; }
+}
+.legend { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 12px 0 0; padding: 0; list-style: none; font-size: 0.85rem; color: var(--muted); }
+.legend li { display: inline-flex; align-items: center; gap: 6px; }
+
+/* ---------- Progress ---------- */
+
+.bars { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; align-items: end; height: 220px; margin-top: 16px; }
+.bar { display: grid; grid-template-rows: auto 1fr auto; height: 100%; text-align: center; }
+.bar__value { font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; min-height: 1.2em; }
+.bar__track { display: flex; align-items: flex-end; justify-content: center; }
+.bar__fill { display: block; width: min(36px, 70%); border-radius: 4px 4px 0 0; background: var(--accent); }
+.bar__label { padding-top: 4px; font-size: 0.72rem; color: var(--muted); border-top: 1px solid var(--border); }
+
+.table-wrap { overflow-x: auto; margin-top: 8px; }
+.weeks { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.weeks th, .weeks td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+.weeks thead th { color: var(--muted); font-size: 0.8rem; }
+.weeks td { font-variant-numeric: tabular-nums; }

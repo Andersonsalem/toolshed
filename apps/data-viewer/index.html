@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JSON, YAML &amp; CSV Viewer</title>
+  <meta name="description" content="Free, private viewer for JSON, YAML and CSV: readable tree, clear errors, tables, conversion, and plain-English explanations of GitHub Actions, Docker Compose and other config files. Nothing is uploaded.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/sheet.js"></script>
+  <script defer src="formats.js"></script>
+  <script defer src="schema.js"></script>
+  <script defer src="examples.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="JSON, YAML &amp; CSV Viewer">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>JSON, YAML &amp; CSV Viewer</h1>
+      <p class="lead">Paste or open a file to read it as a tree or a table, find what's broken, convert it, and understand what each setting in a config file does.</p>
+      <p class="muted small">
+        Nothing you paste or open leaves your device. Explanations come from the official schemas for
+        GitHub Actions workflows, Docker Compose, Dependabot, pre-commit, tsconfig.json and package.json.
+      </p>
+    </section>
+
+    <section class="card source" aria-labelledby="source-title">
+      <div class="source__bar">
+        <h2 id="source-title" class="card-title">Your file</h2>
+        <div class="source__tools">
+          <button id="open" class="button button--small" type="button">Open a file</button>
+          <input id="file" type="file" accept=".json,.jsonc,.yaml,.yml,.csv,.tsv,.txt,application/json,text/csv,text/yaml" hidden>
+          <label for="format" class="inline-label">Read as</label>
+          <select id="format">
+            <option value="auto">Detect</option>
+            <option value="json">JSON</option>
+            <option value="yaml">YAML</option>
+            <option value="csv">CSV</option>
+          </select>
+          <select id="example" aria-label="Try an example">
+            <option value="">Try an example…</option>
+          </select>
+          <button id="clear" class="button button--small button--ghost" type="button">Clear</button>
+        </div>
+      </div>
+      <textarea id="source" spellcheck="false" autocomplete="off" placeholder="Paste JSON, YAML or CSV here, or drop a file on the page"></textarea>
+      <p id="status" class="status small" role="status"></p>
+      <div id="error" class="error" role="alert" hidden></div>
+    </section>
+
+    <section id="views" class="views" hidden>
+      <nav class="tabs" role="tablist" aria-label="Views">
+        <button class="tab" role="tab" type="button" data-view="tree" aria-selected="true">Tree</button>
+        <button class="tab" role="tab" type="button" data-view="table" aria-selected="false">Table</button>
+        <button class="tab" role="tab" type="button" data-view="save" aria-selected="false">Save &amp; convert</button>
+      </nav>
+
+      <div id="view-tree" class="card view">
+        <div class="view__bar">
+          <span id="kind" class="small"></span>
+          <span class="view__tools">
+            <button id="expand" class="button button--small button--ghost" type="button">Expand all</button>
+            <button id="collapse" class="button button--small button--ghost" type="button">Collapse all</button>
+          </span>
+        </div>
+        <p id="edit-note" class="muted small">Change values here and the file above is updated. Existing comments are kept; spacing may be tidied.</p>
+        <div id="tree" class="tree"></div>
+      </div>
+
+      <div id="view-table" class="card view" hidden>
+        <div class="view__bar">
+          <input id="table-search" type="search" placeholder="Search the table…" aria-label="Search the table" autocomplete="off">
+          <span id="table-count" class="muted small"></span>
+        </div>
+        <div id="table" class="table-wrap"></div>
+      </div>
+
+      <div id="view-save" class="card view" hidden>
+        <div class="save__options">
+          <label for="out-format" class="inline-label">Save as</label>
+          <select id="out-format">
+            <option value="json">JSON</option>
+            <option value="yaml">YAML</option>
+            <option value="csv">CSV</option>
+          </select>
+          <span id="comments-option" hidden>
+            <input id="comments" type="checkbox">
+            <label for="comments" class="inline-label normal">Add explanation comments</label>
+          </span>
+        </div>
+        <p id="save-note" class="muted small"></p>
+        <pre id="output" class="output" tabindex="0"></pre>
+        <div class="save__actions">
+          <button id="copy" class="button" type="button">Copy</button>
+          <button id="download" class="button button--ghost" type="button">Download</button>
+          <span id="save-status" class="small muted" role="status"></span>
+        </div>
+      </div>
+
+      <p id="credits" class="muted small credits" hidden>
+        Explanations come from the published schema for this kind of file
+        (<a href="https://www.schemastore.org/" target="_blank" rel="noopener">SchemaStore</a> or the
+        <a href="https://github.com/compose-spec/compose-spec" target="_blank" rel="noopener">Compose Specification</a>, Apache-2.0).
+        They may lag behind the newest versions of these tools.
+      </p>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

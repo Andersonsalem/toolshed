@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wikipedia Paths</title>
+  <meta name="description" content="How is pizza connected to the Moon? Find a chain of Wikipedia links between any two topics, and read about the pages along the way.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/net.js"></script>
+  <script defer src="wiki.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Wikipedia Paths">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Wikipedia Paths</h1>
+      <p class="lead">Pick two topics and find a chain of Wikipedia links from one to the other, then read about the pages you'd pass through on the way.</p>
+      <div class="notice small online-note">
+        <p><span class="badge badge--online">Uses the internet</span> This tool reads Wikipedia's public links and summaries.</p>
+        <p>It sends only the topics you search for. A search makes at most about 45 small requests, one at a time, and stops there: it doesn't hammer Wikipedia, so it may not find every route.</p>
+      </div>
+    </section>
+
+    <form id="form" class="card ask" novalidate>
+      <div class="ask__fields">
+        <div class="field">
+          <label for="from">From</label>
+          <input id="from" list="from-list" autocomplete="off" placeholder="e.g. Pizza" maxlength="200">
+          <datalist id="from-list"></datalist>
+        </div>
+        <button id="swap" class="swap" type="button" aria-label="Swap the two topics" title="Swap">⇄</button>
+        <div class="field">
+          <label for="to">To</label>
+          <input id="to" list="to-list" autocomplete="off" placeholder="e.g. Moon" maxlength="200">
+          <datalist id="to-list"></datalist>
+        </div>
+      </div>
+      <div class="ask__actions">
+        <button id="go" class="button" type="submit">Find a path</button>
+        <button id="surprise" class="button button--ghost" type="button">Surprise me</button>
+        <label for="lang" class="inline-label">Wikipedia in</label>
+        <select id="lang"></select>
+      </div>
+      <p id="form-message" class="small" role="status" hidden></p>
+    </form>
+
+    <div id="progress" class="card progress" hidden>
+      <p id="progress-text" class="small"></p>
+      <div class="meter"><div id="progress-bar" class="meter__fill"></div></div>
+      <button id="stop" class="button button--small button--ghost" type="button">Stop</button>
+    </div>
+
+    <section id="result" class="result" aria-live="polite" hidden></section>
+
+    <p class="muted small credits">
+      Article text and pictures come from Wikipedia and Wikimedia Commons; text is available under
+      <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.
+      Each card links to its article and its full credits.
+    </p>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

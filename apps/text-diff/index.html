@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Text Compare</title>
+  <meta name="description" content="Free text compare (diff) tool: paste or open two versions and see exactly what was added, removed or changed, line by line or word by word. Nothing is uploaded.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="vendor/diff.min.js"></script>
+  <script defer src="compare.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Text Compare">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Text Compare</h1>
+      <p class="lead">Paste or open two versions of a text and see exactly what changed: a contract, a cover letter, a config file, code. Nothing is uploaded.</p>
+    </section>
+
+    <div class="inputs">
+      <section class="card input" data-side="a">
+        <div class="input__head">
+          <label for="text-a">Original</label>
+          <span class="muted small file-name" id="name-a"></span>
+          <button class="button button--small button--ghost" type="button" data-open="a">Open file</button>
+        </div>
+        <textarea id="text-a" spellcheck="false" placeholder="Paste the first version here, or drop a file"></textarea>
+      </section>
+      <section class="card input" data-side="b">
+        <div class="input__head">
+          <label for="text-b">Changed</label>
+          <span class="muted small file-name" id="name-b"></span>
+          <button class="button button--small button--ghost" type="button" data-open="b">Open file</button>
+        </div>
+        <textarea id="text-b" spellcheck="false" placeholder="Paste the second version here, or drop a file"></textarea>
+      </section>
+    </div>
+    <input type="file" id="file" hidden>
+    <p id="file-error" class="notice notice--warning" role="alert" hidden></p>
+
+    <div class="toolbar" id="toolbar">
+      <fieldset class="segmented">
+        <legend>Compare</legend>
+        <label><input type="radio" name="mode" value="lines"> Line by line <span class="muted">(code, lists, data)</span></label>
+        <label><input type="radio" name="mode" value="words"> Word by word <span class="muted">(writing)</span></label>
+      </fieldset>
+      <fieldset class="segmented" id="view-box">
+        <legend>Show</legend>
+        <label><input type="radio" name="view" value="split"> Side by side</label>
+        <label><input type="radio" name="view" value="unified"> One column</label>
+      </fieldset>
+      <fieldset class="options">
+        <legend>Ignore</legend>
+        <label><input type="checkbox" id="ignore-case"> Capitals</label>
+        <label><input type="checkbox" id="ignore-space"> Extra spaces</label>
+      </fieldset>
+      <div class="toolbar__actions">
+        <button class="button button--small button--ghost" type="button" id="swap">Swap</button>
+        <button class="button button--small button--ghost" type="button" id="example">Example</button>
+        <button class="button button--small button--ghost" type="button" id="clear">Clear</button>
+      </div>
+    </div>
+
+    <section class="card result" aria-labelledby="result-title">
+      <div class="result__head">
+        <h2 class="card-title" id="result-title">Differences</h2>
+        <p id="summary" class="summary" role="status"></p>
+        <div class="result__nav" id="nav">
+          <button class="button button--small button--ghost" type="button" id="prev">↑ Previous</button>
+          <button class="button button--small button--ghost" type="button" id="next">↓ Next change</button>
+          <button class="button button--small button--ghost" type="button" id="patch" title="A .patch file in the standard unified diff format, for git and code tools">Download .patch</button>
+        </div>
+      </div>
+      <div id="output" class="output"></div>
+    </section>
+
+    <section class="card notes">
+      <h2 class="card-title">Good to know</h2>
+      <ul>
+        <li><strong>Line by line</strong> suits code, lists and data: each line is matched with its counterpart, and changed words inside a line are highlighted. <strong>Word by word</strong> suits writing, where a sentence edit can reflow a whole paragraph.</li>
+        <li>Ignoring capitals or extra spaces hides those differences from the view. The downloaded .patch file always includes every difference.</li>
+        <li>Long stretches of unchanged lines are folded away; click them to show them.</li>
+        <li>Plain-text files only (.txt, .md, .csv, .json, code…). For Word or PDF documents, copy the text out and paste it here.</li>
+        <li>Nothing you paste or open is saved or sent anywhere. Only the settings above are remembered in this browser.</li>
+      </ul>
+      <p class="muted small">Matching by <a href="https://github.com/kpdecker/jsdiff" rel="noopener">jsdiff</a> (BSD 3-Clause licence).</p>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

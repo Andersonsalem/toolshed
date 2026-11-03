@@ -1,0 +1,41 @@
+<!doctype html>
+<!--
+  Starting point for a new tool.
+  1. Copy this whole folder to apps/<your-tool-id>/
+  2. Change the <title>, description and data-page-title below
+  3. Write the tool in app.js and app.css (they belong to this tool only)
+  4. Add an entry to shared/registry.js and set status: "live" when it's ready
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tool name</title>
+  <meta name="description" content="One sentence saying what this tool does.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Tool name">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Tool name</h1>
+      <p class="lead">What it does, in one plain sentence.</p>
+    </section>
+
+    <p id="storage-warning" class="notice notice--warning" hidden>
+      Your browser is blocking storage (this often happens in private windows), so your work won't be saved when you close this page.
+    </p>
+
+    <div id="app"></div>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

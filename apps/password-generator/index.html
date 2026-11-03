@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Password Generator</title>
+  <meta name="description" content="Free password, passphrase and PIN generator. Random, made in your browser, never sent or saved. Shows honestly how strong each one is.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="words.js"></script>
+  <script defer src="generator.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Password Generator">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Password &amp; Passphrase Generator</h1>
+      <p class="lead">Random passwords, easy-to-type passphrases and PINs. They're made in your browser and are never sent anywhere or saved.</p>
+    </section>
+
+    <nav class="tabs" role="tablist" aria-label="What to make">
+      <button class="tab" role="tab" type="button" data-mode="password">Password</button>
+      <button class="tab" role="tab" type="button" data-mode="passphrase">Passphrase</button>
+      <button class="tab" role="tab" type="button" data-mode="pin">PIN</button>
+    </nav>
+
+    <div class="layout">
+      <form class="card options" id="options" autocomplete="off">
+        <!-- Password -->
+        <div data-for="password">
+          <div class="field">
+            <label for="length">Length: <strong id="length-out"></strong> characters</label>
+            <input id="length" type="range" min="4" max="64">
+          </div>
+          <fieldset class="checks">
+            <legend>Use</legend>
+            <label><input type="checkbox" id="lower"> Lowercase letters (a–z)</label>
+            <label><input type="checkbox" id="upper"> Capital letters (A–Z)</label>
+            <label><input type="checkbox" id="digits"> Digits (0–9)</label>
+            <label><input type="checkbox" id="symbols"> Symbols</label>
+          </fieldset>
+          <div class="field" id="symbol-field">
+            <label for="symbol-chars">Symbols to use</label>
+            <div class="symbol-row">
+              <input id="symbol-chars" type="text" spellcheck="false" maxlength="40">
+              <button class="button button--small button--ghost" type="button" id="symbol-reset">Reset</button>
+            </div>
+            <p class="muted small">If a site only accepts some symbols, keep just those.</p>
+          </div>
+          <fieldset class="checks">
+            <legend>Extras</legend>
+            <label><input type="checkbox" id="each-kind"> At least one of each kind</label>
+            <label><input type="checkbox" id="avoid-lookalikes"> Avoid look-alikes (<span class="mono">I l 1 | O 0 o</span> and quotes)</label>
+          </fieldset>
+          <label class="long-toggle"><input type="checkbox" id="allow-long"> Allow up to 128 characters</label>
+        </div>
+
+        <!-- Passphrase -->
+        <div data-for="passphrase">
+          <div class="field">
+            <label for="words">Words: <strong id="words-out"></strong></label>
+            <input id="words" type="range" min="3" max="12">
+          </div>
+          <div class="field">
+            <label for="separator">Between words</label>
+            <select id="separator"></select>
+          </div>
+          <fieldset class="checks">
+            <legend>Extras</legend>
+            <label><input type="checkbox" id="capitalize"> Capitalize each word</label>
+            <label><input type="checkbox" id="number"> Add a digit (for sites that require one)</label>
+          </fieldset>
+          <p class="muted small">Words come from the EFF's list of 7,776 common, easy-to-spell words.</p>
+        </div>
+
+        <!-- PIN -->
+        <div data-for="pin">
+          <div class="field">
+            <label for="pin-length">Digits: <strong id="pin-length-out"></strong></label>
+            <input id="pin-length" type="range" min="4" max="12">
+          </div>
+          <p class="muted small">Avoid PINs based on dates, like a birthday: those are among the first an attacker tries.</p>
+        </div>
+      </form>
+
+      <section class="card results" aria-labelledby="results-title">
+        <div class="results__head">
+          <h2 class="card-title" id="results-title">Pick one</h2>
+          <button class="button button--small" type="button" id="again">New ones</button>
+        </div>
+        <ul id="list" class="list" aria-live="polite"></ul>
+        <p id="empty" class="notice notice--warning" hidden>Choose at least one kind of character.</p>
+        <p id="copy-status" class="muted small" role="status"></p>
+
+        <div id="strength" class="strength"></div>
+      </section>
+    </div>
+
+    <section class="card notes">
+      <h2 class="card-title">Good to know</h2>
+      <ul>
+        <li>Nothing you see here is saved or sent. Your settings are remembered in this browser; the passwords aren't.</li>
+        <li>Use a different password for every account, and keep them in a password manager (the one built into your browser or phone is fine). Then you only need to remember one strong passphrase.</li>
+        <li>Copied passwords stay on your clipboard until you copy something else, and some systems keep a clipboard history (on Windows, press <kbd>Win</kbd>+<kbd>V</kbd> to see and clear it).</li>
+        <li>Turn on two-step sign-in where you can. It protects you even if a password leaks.</li>
+      </ul>
+      <details>
+        <summary>How strength is calculated</summary>
+        <p>Strength is shown in <strong>bits</strong>: each extra bit doubles the number of possible results. Because every character or word here is picked at random, the count is exact: for example, 16 characters from 87 possible ones give 87<sup>16</sup> possibilities, about 103 bits. With "at least one of each kind", the passwords missing a kind are subtracted from the count.</p>
+        <p>The figure only holds for passwords made randomly like this. A password you invent yourself, like <span class="mono">Summer2024!</span>, is far weaker than its length suggests, because attackers try common patterns first.</p>
+        <p>A passphrase's strength comes from the number of words, not their length: each word adds about 12.9 bits (7,772 possible words; the list's 4 hyphenated words are left out so a dashed phrase can only be read one way). Capitalizing every word adds no strength, since an attacker can assume it.</p>
+        <p>Guessing times assume someone stole a site's password database and tries guesses on their own computers, finding yours on average halfway through. The speeds are rough: real ones vary a lot with the hardware and how the site protected the passwords. A site's login page is much slower to attack, because it limits attempts.</p>
+        <p>Randomness comes from your browser's cryptographic generator (<span class="mono">crypto.getRandomValues</span>), the same one used for secure connections.</p>
+      </details>
+      <p class="muted small">Passphrase words: <a href="https://www.eff.org/dice" rel="noopener">EFF large word list</a> by the Electronic Frontier Foundation, <a href="https://creativecommons.org/licenses/by/3.0/us/" rel="noopener">CC BY 3.0 US</a>.</p>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+/* Text Compare only. */
+
+:root {
+  --del-bg: #fbe3e1;
+  --del-strong: #f2b8b3;
+  --add-bg: #dff2e6;
+  --add-strong: #a9dcbc;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --del-bg: #3a2224;
+    --del-strong: #6b3236;
+    --add-bg: #1d3528;
+    --add-strong: #2c5e40;
+  }
+}
+:root[data-theme="dark"] {
+  --del-bg: #3a2224;
+  --del-strong: #6b3236;
+  --add-bg: #1d3528;
+  --add-strong: #2c5e40;
+}
+
+.tool-intro { padding: 40px 0 8px; }
+.small { font-size: 0.9rem; }
+.card-title { margin: 0; font-size: 1.1rem; }
+
+/* ---------- Inputs ---------- */
+
+.inputs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+@media (max-width: 700px) {
+  .inputs { grid-template-columns: minmax(0, 1fr); }
+}
+.input { display: grid; gap: 8px; }
+.input.is-drop { outline: 3px dashed var(--accent); outline-offset: -3px; }
+.input__head { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.input__head label { margin: 0; }
+.file-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.input__head .button { margin-left: auto; }
+.input textarea { min-height: 200px; font-family: var(--font-mono); font-size: 0.88rem; line-height: 1.5; white-space: pre; overflow-wrap: normal; overflow-x: auto; }
+
+/* ---------- Toolbar ---------- */
+
+.toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 24px; margin: 16px 0; }
+.toolbar fieldset { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0; padding: 0; border: 0; }
+.toolbar legend { margin-bottom: 6px; padding: 0; font-weight: 600; font-size: 0.85rem; color: var(--muted); }
+.toolbar label { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-weight: 400; }
+.toolbar input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+.toolbar__actions { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+
+/* ---------- Result ---------- */
+
+.result__head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 12px; }
+.summary { flex: 1 1 260px; margin: 0; color: var(--muted); }
+.summary.is-same { color: var(--accent); font-weight: 600; }
+.result__nav { display: flex; flex-wrap: wrap; gap: 6px; }
+@media (min-width: 701px) {
+  /* Keeps the result's buttons in reach while scrolling a long comparison. */
+  .result__head { position: sticky; top: 0; z-index: 1; padding: 8px 0; background: var(--surface); }
+}
+.output:empty { display: none; }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-small); }
+.diff { width: 100%; border-collapse: collapse; table-layout: fixed; font-family: var(--font-mono); font-size: 0.84rem; line-height: 1.5; }
+.diff td { padding: 1px 8px; vertical-align: top; }
+.diff .col-num { width: 3.6em; }
+.diff .col-sign { width: 1.6em; }
+.diff .num { color: var(--muted); text-align: right; user-select: none; background: var(--surface-2); font-variant-numeric: tabular-nums; }
+.diff--split td.num + td.line { border-right: 1px solid var(--border); }
+.diff .line { white-space: pre-wrap; overflow-wrap: anywhere; }
+.diff .sign { user-select: none; text-align: center; color: var(--muted); }
+.diff .is-del, .diff .row-del .sign { background: var(--del-bg); }
+.diff .is-add, .diff .row-add .sign { background: var(--add-bg); }
+.diff .empty { background: repeating-linear-gradient(135deg, transparent 0 6px, var(--surface-2) 6px 8px); }
+.diff del, .word-diff del { background: var(--del-strong); text-decoration: line-through; text-decoration-thickness: 1px; color: inherit; border-radius: 2px; }
+.diff ins, .word-diff ins { background: var(--add-strong); text-decoration: none; color: inherit; border-radius: 2px; }
+.row-fold td { padding: 0; background: var(--surface-2); }
+.fold { width: 100%; padding: 6px; border: 0; background: none; color: var(--accent); font: inherit; font-family: var(--font); font-size: 0.85rem; cursor: pointer; }
+.fold:hover { text-decoration: underline; }
+
+.word-diff { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.7; padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-small); }
+
+.is-flash { animation: flash 1.2s ease-out; }
+@keyframes flash { from { outline: 3px solid var(--accent); outline-offset: -3px; } to { outline: 3px solid transparent; outline-offset: -3px; } }
+@media (prefers-reduced-motion: reduce) { .is-flash { animation: none; outline: 3px solid var(--accent); } }
+
+.notes { margin-top: 16px; }
+.notes ul { padding-left: 1.2em; }
+.notes li + li { margin-top: 6px; }
+
+/* "Next change" lands below the sticky header, not under it (app.js uses the same 80px). */
+.diff tr, .word-diff ins, .word-diff del { scroll-margin-top: 80px; }
+
+/* Phones always get one column (app.js), so the choice is hidden there. */
+@media (max-width: 699px) {
+  #view-box { display: none; }
+  .diff .col-num { width: 2.6em; }
+  .diff td { padding: 1px 5px; }
+}

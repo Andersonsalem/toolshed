@@ -1,0 +1,135 @@
+/* Time Zone Planner only. */
+
+:root {
+  --k-work: #cfe8dc;
+  --k-edge: #f1efe8;
+  --k-night: #2f3a45;
+  --k-night-text: #d5dce3;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --k-work: #275443;
+    --k-edge: #2a2e2c;
+    --k-night: #0f1216;
+    --k-night-text: #8d97a1;
+  }
+}
+:root[data-theme="dark"] {
+  --k-work: #275443;
+  --k-edge: #2a2e2c;
+  --k-night: #0f1216;
+  --k-night-text: #8d97a1;
+}
+
+.tool-intro { padding: 40px 0 8px; }
+.small { font-size: 0.9rem; }
+.card-title { margin: 0; font-size: 1.1rem; }
+.card + .card, .lower { margin-top: 16px; }
+#shared-note .button { margin: 6px 6px 0 0; }
+
+/* ---------- Controls ---------- */
+
+.controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 24px; margin-top: 16px; }
+.date-row { display: flex; align-items: center; gap: 6px; }
+.date-row input { width: auto; }
+.control label { font-size: 0.85rem; }
+.control select { width: auto; }
+.check { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; font-weight: 400; }
+.check input { width: 18px; height: 18px; }
+#dst-note { margin-top: 16px; }
+
+/* ---------- Hour grid ---------- */
+
+.grid-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0; padding: 0; list-style: none; font-size: 0.82rem; color: var(--muted); }
+.legend li { display: inline-flex; align-items: center; gap: 6px; }
+.swatch { width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--border); }
+#grid-help { margin: 6px 0 10px; }
+
+.grid-wrap { overflow-x: auto; }
+.hours { border-collapse: separate; border-spacing: 0 4px; min-width: 100%; }
+.hours th.place {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 150px;
+  max-width: 190px;
+  padding: 4px 10px 4px 0;
+  background: var(--surface);
+  text-align: left;
+  font-weight: 400;
+  vertical-align: middle;
+}
+.place__name { display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 600px) {
+  .hours th.place { min-width: 96px; max-width: 110px; padding-right: 6px; }
+  .place__name { font-size: 0.85rem; }
+  .place__now, .place__meta { font-size: 0.72rem; }
+}
+.place__now, .place__meta { display: block; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+.hours td {
+  min-width: 34px;
+  height: 44px;
+  padding: 0 2px;
+  text-align: center;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  border-left: 1px solid var(--surface);
+  position: relative;
+}
+.k-work { background: var(--k-work); }
+.k-edge { background: var(--k-edge); }
+.k-night { background: var(--k-night); color: var(--k-night-text); }
+.hours td.is-newday { font-weight: 700; box-shadow: inset 2px 0 0 var(--muted); }
+.hours td:hover { outline: 2px solid var(--accent); outline-offset: -2px; }
+.hours td.is-picked { box-shadow: inset 0 3px 0 var(--accent), inset 0 -3px 0 var(--accent); font-weight: 700; }
+.hours td.is-now::after { content: ""; position: absolute; left: 50%; top: -4px; bottom: -4px; width: 2px; background: var(--danger); transform: translateX(-50%); pointer-events: none; opacity: 0.8; }
+
+/* ---------- Meeting and best times ---------- */
+
+.lower { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.lower .card + .card { margin-top: 0; }
+@media (max-width: 760px) {
+  .lower { grid-template-columns: minmax(0, 1fr); }
+}
+.lower .control { margin: 12px 0; }
+.meeting { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 6px; }
+.meeting li { display: flex; flex-wrap: wrap; gap: 2px 10px; align-items: baseline; padding: 6px 10px; border-left: 4px solid var(--accent); background: var(--surface-2); border-radius: var(--radius-small); }
+.meeting li.is-edge { border-left-color: var(--muted); }
+.meeting li.is-night { border-left-color: var(--danger); }
+.meeting .flag { font-size: 0.8rem; color: var(--muted); }
+.meeting li.is-night .flag { color: var(--danger); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+#status { min-height: 1.4em; margin: 8px 0 0; overflow-wrap: anywhere; }
+
+.best { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.best__pick { display: grid; gap: 2px; width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-small); background: var(--surface); color: var(--text); font: inherit; font-size: 0.92rem; text-align: left; cursor: pointer; }
+.best__pick:hover { border-color: var(--accent); }
+.best__pick .muted { font-size: 0.85rem; }
+
+/* ---------- Places ---------- */
+
+.places-card > p { margin: 6px 0 12px; }
+.add { position: relative; max-width: 460px; }
+.add label { font-size: 0.85rem; }
+.suggestions { position: absolute; left: 0; right: 0; z-index: 5; margin: 4px 0 0; padding: 4px; list-style: none; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-small); box-shadow: 0 6px 20px rgb(0 0 0 / 0.15); }
+.suggestions li { display: grid; padding: 6px 8px; border-radius: 4px; cursor: pointer; }
+.suggestions li.is-active, .suggestions li:hover { background: var(--accent-soft); }
+.suggestions li.none { cursor: default; background: none; }
+.suggestions .muted { font-size: 0.82rem; }
+#search-note { margin: 4px 0 0; min-height: 1em; }
+
+.places { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
+.place-row { display: grid; grid-template-columns: minmax(0, 1.3fr) auto auto; gap: 8px 16px; align-items: center; padding: 10px 0; border-top: 1px solid var(--border); }
+.place-row__name { display: grid; gap: 2px; min-width: 0; }
+.place-row__name input { font-weight: 600; }
+.place-row__hours { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.place-row__hours select { width: auto; }
+.place-row__actions { display: flex; gap: 4px; }
+@media (max-width: 760px) {
+  .place-row { grid-template-columns: minmax(0, 1fr); }
+}
+
+.notes ul { padding-left: 1.2em; }
+.notes li + li { margin-top: 6px; }

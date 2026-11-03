@@ -1,0 +1,121 @@
+/* Message Templates only. */
+
+.tool-intro { padding: 40px 0 8px; }
+.small { font-size: 0.9rem; }
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
+  align-items: start;
+  margin-top: 24px;
+}
+@media (max-width: 800px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+/* ---------- Template list ---------- */
+
+.picker { padding: 14px; position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; }
+@media (max-width: 800px) {
+  .picker { position: static; max-height: 360px; }
+}
+.picker h3 { margin: 14px 0 4px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.picker ul { list-style: none; margin: 0; padding: 0; }
+.picker li a {
+  display: block;
+  padding: 6px 8px;
+  border-radius: var(--radius-small);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.93rem;
+}
+.picker li a:hover { background: var(--surface-2); }
+.picker li a[aria-current="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.picker .empty { color: var(--muted); font-size: 0.9rem; margin: 12px 4px; }
+.new-template { width: 100%; margin-top: 14px; }
+.mine-badge {
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  vertical-align: 1px;
+}
+.library { display: grid; gap: 6px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+.library p { margin: 0; }
+
+/* ---------- Editor ---------- */
+
+.editor { display: grid; gap: 16px; }
+.editor h2 { margin: 0; }
+.editor__when { margin: 4px 0 0; color: var(--muted); }
+
+.card-title { margin: 0 0 10px; font-size: 1rem; }
+
+.fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.fields label { font-size: 0.88rem; margin-bottom: 2px; }
+.fields .is-wide { grid-column: 1 / -1; }
+.fields textarea { min-height: 64px; }
+.fields-note { margin: 8px 0 0; }
+
+.preview { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.97rem; line-height: 1.6; }
+.preview__subject { margin: 0 0 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.preview__subject span { color: var(--muted); }
+.preview__body { margin: 0; }
+.blank {
+  padding: 0 3px;
+  border-radius: 3px;
+  background: var(--surface-2);
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.blanks-left { margin: 0; font-size: 0.9rem; color: var(--danger); }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.actions__status { font-size: 0.9rem; color: var(--muted); }
+
+.custom textarea { min-height: 260px; font-family: var(--font-mono); font-size: 0.9rem; }
+.custom .fields { grid-template-columns: 1fr; }
+.custom__actions { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
+
+.category-pick { display: grid; gap: 8px; }
+
+/* ---------- Mail merge ---------- */
+
+.merge summary { cursor: pointer; font-weight: 600; }
+.merge p { margin: 10px 0 0; }
+.merge-file { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 12px; }
+.merge-map { width: 100%; margin-top: 14px; border-collapse: collapse; }
+.merge-map th,
+.merge-map td { padding: 6px 8px 6px 0; text-align: left; vertical-align: middle; }
+.merge-map thead th { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+.merge-map tbody th { font-weight: 600; font-size: 0.92rem; width: 40%; }
+.merge-map .merge-email th,
+.merge-map .merge-email td { border-top: 1px solid var(--border); padding-top: 10px; }
+@media (max-width: 560px) {
+  .merge-map thead { display: none; }
+  .merge-map tbody th { width: auto; }
+  .merge-map tr { display: grid; }
+}
+.merge-preview { display: grid; gap: 6px; margin-top: 14px; }
+.merge-preview .card { box-shadow: none; }
+.merge .actions { margin-top: 14px; }
+.drafts__buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+
+/* ---------- Your details ---------- */
+
+.details-card { margin-top: 24px; }
+.details-card summary { cursor: pointer; font-weight: 600; }
+.details-card .fields { margin-top: 14px; }
+.details-actions { margin-top: 14px; }

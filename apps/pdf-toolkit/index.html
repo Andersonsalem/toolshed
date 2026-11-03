@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDF Toolkit</title>
+  <meta name="description" content="Free, private PDF tool: merge PDFs, reorder, rotate and delete pages, extract pages or split into single pages. Files never leave your device.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/zip.js"></script>
+  <script defer src="../../shared/pdfjs.js"></script>
+  <script defer src="vendor/pdf-lib.min.js"></script>
+  <script defer src="engine.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="PDF Toolkit">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>PDF Toolkit</h1>
+      <p class="lead">Merge PDFs, reorder, rotate and remove pages, then download one PDF, just the pages you pick, or every page as its own file.</p>
+      <p class="muted small">Your files never leave your device: everything happens in this browser tab. Nothing is saved either, so closing the tab clears it.</p>
+    </section>
+
+    <p id="unsupported" class="notice notice--warning" hidden></p>
+
+    <div id="drop" class="drop">
+      <p class="drop__title">Drop PDF files here</p>
+      <p class="muted small">or</p>
+      <button id="choose" class="button" type="button">Choose PDF files</button>
+      <input id="file-input" type="file" accept="application/pdf,.pdf" multiple hidden>
+    </div>
+
+    <p id="message" class="message" role="status" hidden></p>
+
+    <section id="workspace" class="workspace" aria-labelledby="pages-title" hidden>
+      <div class="toolbar">
+        <div>
+          <h2 id="pages-title">Pages</h2>
+          <p id="summary" class="muted small"></p>
+        </div>
+        <div class="toolbar__actions">
+          <button id="undo" class="button button--small button--ghost" type="button">Undo</button>
+          <button id="remove-all" class="button button--small button--danger" type="button">Start over</button>
+        </div>
+      </div>
+
+      <div class="selection-bar">
+        <button id="select-all" class="button button--small button--ghost" type="button">Select all</button>
+        <button id="select-none" class="button button--small button--ghost" type="button">Clear selection</button>
+        <span id="selected-count" class="muted small"></span>
+        <button id="rotate-selected" class="button button--small button--ghost" type="button">Rotate selected</button>
+        <button id="delete-selected" class="button button--small button--ghost" type="button">Remove selected</button>
+      </div>
+      <p class="muted small hint">Drag pages to reorder them, or use the arrow buttons.</p>
+
+      <ol id="pages" class="pages"></ol>
+
+      <div class="card output">
+        <h2>Download</h2>
+        <div class="field output__name">
+          <label for="out-name">File name</label>
+          <input id="out-name" autocomplete="off" maxlength="120">
+        </div>
+        <div class="output__actions">
+          <button id="download-all" class="button" type="button">Download PDF</button>
+          <button id="download-selected" class="button button--ghost" type="button">Download selected pages</button>
+          <button id="download-split" class="button button--ghost" type="button">Every page as its own PDF (.zip)</button>
+        </div>
+        <p id="output-status" class="small" role="status"></p>
+        <p class="muted small">
+          Pages are copied exactly as they are, so text stays selectable and quality doesn't change.
+          Form fields, bookmarks and links between pages may not carry over.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

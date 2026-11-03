@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weather Planner</title>
+  <meta name="description" content="Free weather forecast and planner: find the best time this week for a run, a bike ride, a picnic or drying laundry. No account, no ads, no tracking.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="../../shared/net.js"></script>
+  <script defer src="weather.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Weather Planner">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Weather Planner</h1>
+      <p class="lead">The forecast for the week, and the best times for a run, a ride, a picnic or anything else you plan outdoors.</p>
+      <div class="notice small online-note">
+        <p><span class="badge badge--online">Uses the internet</span> This tool gets forecasts from <strong>Open-Meteo</strong>, a free weather service.</p>
+        <p>It sends only the place you search for, or your location rounded to about 1 km. No account, no cookies, nothing else about you. Answers are kept in your browser for 30 minutes, so it asks as little as possible.</p>
+      </div>
+    </section>
+
+    <section class="card where" aria-labelledby="where-title">
+      <h2 id="where-title" class="card-title">Where?</h2>
+      <form id="search-form" class="search">
+        <input id="search" type="search" placeholder="City or town" autocomplete="off" aria-label="City or town" maxlength="100">
+        <button class="button" type="submit">Search</button>
+        <button id="locate" class="button button--ghost" type="button">Use my location</button>
+      </form>
+      <p id="where-message" class="small" role="status" hidden></p>
+      <ul id="results" class="results-list" hidden></ul>
+      <div id="places" class="places"></div>
+      <div class="units">
+        <label for="unit-temp" class="inline-label">Temperature</label>
+        <select id="unit-temp"><option value="C">°C</option><option value="F">°F</option></select>
+        <label for="unit-wind" class="inline-label">Wind</label>
+        <select id="unit-wind"><option value="kmh">km/h</option><option value="mph">mph</option></select>
+      </div>
+    </section>
+
+    <p id="forecast-message" class="notice small" role="status" hidden></p>
+
+    <div id="forecast" hidden>
+      <section class="card now" aria-labelledby="now-title">
+        <div class="now__head">
+          <h2 id="now-title"></h2>
+          <span id="updated" class="muted small"></span>
+        </div>
+        <div id="now" class="now__body"></div>
+        <h3 class="sub-title">Next 24 hours</h3>
+        <div id="hours" class="hours" tabindex="0" aria-label="Next 24 hours, scrolls sideways"></div>
+      </section>
+
+      <section class="card" aria-labelledby="week-title">
+        <h2 id="week-title" class="card-title">This week</h2>
+        <ul id="days" class="days"></ul>
+        <p class="muted small">Forecasts are less reliable the further ahead they go, especially after two or three days.</p>
+      </section>
+
+      <section class="card plan" aria-labelledby="plan-title">
+        <h2 id="plan-title" class="card-title">Find the best time for…</h2>
+        <div class="plan__activity">
+          <select id="activity" aria-label="Activity"></select>
+        </div>
+        <div class="criteria">
+          <div class="field"><label for="c-min">Feels like at least</label><div class="unit-input"><input id="c-min" type="number" step="1"><span class="unit-t"></span></div></div>
+          <div class="field"><label for="c-max">Feels like at most</label><div class="unit-input"><input id="c-max" type="number" step="1"><span class="unit-t"></span></div></div>
+          <div class="field"><label for="c-rain">Chance of rain at most</label><div class="unit-input"><input id="c-rain" type="number" min="0" max="100" step="5"><span>%</span></div></div>
+          <div class="field"><label for="c-wind">Wind at most</label><div class="unit-input"><input id="c-wind" type="number" min="0" step="1"><span class="unit-w"></span></div></div>
+          <div class="field"><label for="c-hours">For how long</label><div class="unit-input"><input id="c-hours" type="number" min="1" max="12" step="1"><span>hours</span></div></div>
+          <div class="field check"><input id="c-daylight" type="checkbox"><label for="c-daylight">Daylight only</label></div>
+        </div>
+        <div id="slots"></div>
+        <h3 class="sub-title">The week at a glance</h3>
+        <div id="grid" class="grid-wrap"></div>
+      </section>
+
+      <p class="muted small attribution">
+        Weather data by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a>
+        (<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>).
+      </p>
+    </div>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

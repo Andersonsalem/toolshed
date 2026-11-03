@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Application Tracker</title>
+  <meta name="description" content="Free, private job application tracker. See what needs a follow-up and how your search is going. Your data stays in your browser.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Application Tracker">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Application Tracker</h1>
+      <p class="lead">Keep every job application in one place, see what needs a follow-up, and see how your search is going.</p>
+      <p class="muted small">Saved only in this browser, on this device. <a href="#data">Download a backup</a> now and then.</p>
+    </section>
+
+    <p id="storage-warning" class="notice notice--warning" hidden>
+      Your browser is blocking storage (this often happens in private windows), so your applications won't be saved when you close this page.
+    </p>
+    <p id="save-error" class="notice notice--warning" role="alert" hidden>
+      Your last change couldn't be saved. Your browser's storage may be full or blocked.
+      <a href="#data">Download a backup</a> so you don't lose anything.
+    </p>
+
+    <section aria-label="Summary">
+      <div id="stats" class="stats"></div>
+      <details class="stats-help">
+        <summary>How these numbers are counted</summary>
+        <ul>
+          <li><strong>Applied</strong>: applications you've sent. Ones marked <em>Saved</em> aren't counted.</li>
+          <li><strong>Reply rate</strong>: share of those that got any answer: an interview, an offer or a rejection. <em>No response</em> isn't a reply.</li>
+          <li><strong>Interviews</strong> and <strong>Offers</strong>: applications that reached that stage at any point, even if they later closed. An offer also counts as an interview.</li>
+          <li>Numbers only include what you've entered here.</li>
+        </ul>
+      </details>
+    </section>
+
+    <section id="attention" class="attention" hidden>
+      <h2>Needs attention</h2>
+      <ul id="attention-list" class="attention-list"></ul>
+    </section>
+
+    <section aria-labelledby="applications-title">
+      <div class="toolbar">
+        <h2 id="applications-title">Applications</h2>
+        <button id="add-button" class="button" type="button">Add application</button>
+      </div>
+      <div class="filters">
+        <div class="field field--search">
+          <label for="search">Search</label>
+          <input id="search" type="search" placeholder="Company, role, notes…" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="filter">Show</label>
+          <select id="filter"></select>
+        </div>
+        <div class="field">
+          <label for="sort">Sort by</label>
+          <select id="sort">
+            <option value="updated">Recently changed</option>
+            <option value="applied">Date applied</option>
+            <option value="followup">Follow-up date</option>
+            <option value="company">Company A–Z</option>
+          </select>
+        </div>
+      </div>
+      <p id="list-count" class="muted small" aria-live="polite"></p>
+      <div id="list"></div>
+    </section>
+
+    <section id="data" class="data" aria-labelledby="data-title">
+      <h2 id="data-title">Backup and data</h2>
+      <p class="muted">Your applications are stored in this browser only. Clearing your browsing data, or switching device or browser, means they won't be here. A backup file lets you restore them anywhere.</p>
+      <div class="data__actions">
+        <button id="export-json" class="button button--ghost" type="button">Download backup (.json)</button>
+        <button id="export-csv" class="button button--ghost" type="button">Download spreadsheet (.csv)</button>
+        <button id="import-button" class="button button--ghost" type="button">Restore from backup</button>
+        <input id="import-file" type="file" accept=".json,application/json" hidden>
+        <button id="delete-all" class="button button--danger" type="button">Delete all</button>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <dialog id="job-dialog" aria-labelledby="dialog-title">
+    <form id="job-form" novalidate>
+      <h2 id="dialog-title">Add application</h2>
+      <div class="form-grid">
+        <div class="field">
+          <label for="f-company">Company <span class="req">(required)</span></label>
+          <input id="f-company" name="company" autocomplete="off" maxlength="200">
+        </div>
+        <div class="field">
+          <label for="f-role">Role</label>
+          <input id="f-role" name="role" autocomplete="off" maxlength="200">
+        </div>
+        <div class="field">
+          <label for="f-status">Status</label>
+          <select id="f-status" name="status"></select>
+        </div>
+        <div class="field">
+          <label for="f-location">Location</label>
+          <input id="f-location" name="location" placeholder="Remote, hybrid, city…" maxlength="200">
+        </div>
+        <div class="field">
+          <label for="f-applied">Date applied</label>
+          <input id="f-applied" name="appliedOn" type="date">
+        </div>
+        <div class="field">
+          <label for="f-followup">Follow up on</label>
+          <input id="f-followup" name="followUpOn" type="date">
+          <small>When this date comes, it shows under Needs attention.</small>
+        </div>
+        <div class="field field--wide">
+          <label for="f-url">Job posting link</label>
+          <input id="f-url" name="url" inputmode="url" placeholder="https://…" maxlength="2000">
+        </div>
+        <div class="field">
+          <label for="f-salary">Pay</label>
+          <input id="f-salary" name="salary" placeholder="e.g. $90–110k" maxlength="200">
+        </div>
+        <div class="field">
+          <label for="f-contact">Contact</label>
+          <input id="f-contact" name="contact" placeholder="Recruiter, email…" maxlength="200">
+        </div>
+        <div class="field field--wide">
+          <label for="f-notes">Notes</label>
+          <textarea id="f-notes" name="notes" maxlength="20000"></textarea>
+        </div>
+      </div>
+      <p id="form-error" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button id="delete-job" class="button button--danger" type="button" hidden>Delete</button>
+        <span class="spacer"></span>
+        <button id="cancel-job" class="button button--ghost" type="button">Cancel</button>
+        <button class="button" type="submit">Save</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>

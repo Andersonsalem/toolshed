@@ -1,0 +1,3 @@
+/* Styles for this tool only. Use the tokens from shared/base.css (var(--accent) etc.). */
+
+.tool-intro { padding: 40px 0 16px; }

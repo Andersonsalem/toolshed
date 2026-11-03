@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resume ↔ Job Match</title>
+  <meta name="description" content="Free, private resume keyword checker. Compare your resume to a job description and see which key terms are missing. Nothing is uploaded.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="../../shared/zip.js"></script>
+  <script defer src="skills.js"></script>
+  <script defer src="synonyms.js"></script>
+  <script defer src="analyze.js"></script>
+  <script defer src="docx.js"></script>
+  <script defer src="examples.js"></script>
+  <script defer src="packs.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Resume ↔ Job Match">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Resume ↔ Job Match</h1>
+      <p class="lead">Paste your resume and a job description to see which of the job's key terms your resume is missing.</p>
+      <p class="notice small">
+        <strong>What this is, and isn't.</strong> It compares words. It doesn't know how any particular employer's hiring software works, and people read resumes too.
+        Use it to spot gaps, and only add a keyword if it's true for you.
+        Nothing you paste is uploaded.
+      </p>
+    </section>
+
+    <p id="storage-warning" class="notice notice--warning" hidden>
+      Your browser is blocking storage (this often happens in private windows), so your text won't be remembered when you close this page.
+    </p>
+
+    <div class="inputs">
+      <div class="input-panel">
+        <div class="input-panel__head">
+          <label for="resume">Your resume</label>
+          <span id="resume-count" class="muted small"></span>
+        </div>
+        <textarea id="resume" spellcheck="false" placeholder="Paste your resume text here…"></textarea>
+        <div class="input-panel__actions">
+          <button id="open-file" class="button button--small button--ghost" type="button">Open a file (.docx, .txt)</button>
+          <input id="resume-file" type="file" accept=".docx,.txt,.md,.pdf,.doc" hidden>
+          <button id="clear-resume" class="button button--small button--ghost" type="button">Clear</button>
+        </div>
+        <p id="file-message" class="small" role="status" hidden></p>
+        <p class="muted small">Have a PDF? Open it, select all the text, copy it, and paste it here.</p>
+      </div>
+
+      <div class="input-panel">
+        <div class="input-panel__head">
+          <label for="job">Job description</label>
+          <span id="job-count" class="muted small"></span>
+        </div>
+        <textarea id="job" spellcheck="false" placeholder="Paste the full job posting here, including the requirements…"></textarea>
+        <div class="input-panel__actions">
+          <button id="clear-job" class="button button--small button--ghost" type="button">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="options">
+      <label class="checkbox">
+        <input id="remember" type="checkbox">
+        Remember both texts in this browser
+      </label>
+      <button id="example" class="button button--small button--ghost" type="button">Try an example</button>
+    </div>
+
+    <section class="card my-skills" aria-labelledby="my-skills-title">
+      <div class="my-skills__head">
+        <h2 id="my-skills-title">Your skills <span class="muted">(optional)</span></h2>
+        <span id="my-skills-count" class="muted small"></span>
+      </div>
+      <p class="muted small">
+        List skills you have. They'll be recognised in any job description, even ones this page doesn't know,
+        and you'll see which of them each job asks for. Saved in this browser.
+      </p>
+      <form id="skill-form" class="skill-form">
+        <input id="skill-input" aria-label="Skills to add" placeholder="e.g. Python, SQL, Kubernetes | k8s" autocomplete="off" maxlength="2000">
+        <button class="button button--small" type="submit">Add</button>
+      </form>
+      <p class="muted small">Separate skills with commas. Add other spellings after a <kbd>|</kbd>, like <em>Kubernetes | k8s</em>.</p>
+      <p id="skills-message" class="small" role="status" hidden></p>
+      <ul id="my-skills" class="chips"></ul>
+      <div class="my-skills__actions">
+        <select id="pack" aria-label="Add a starter list">
+          <option value="">Add a starter list…</option>
+        </select>
+        <button id="clear-skills" class="button button--small button--danger" type="button">Remove all</button>
+      </div>
+    </section>
+
+    <section id="fit" class="card fit" aria-labelledby="fit-title" hidden>
+      <h2 id="fit-title">Your skills in this job</h2>
+      <p id="fit-summary" class="fit__summary"></p>
+      <div id="fit-groups"></div>
+      <p class="muted small">Based on your list. A job can ask for a skill in words this page doesn't recognise.</p>
+    </section>
+
+    <p id="hint" class="hint muted"></p>
+
+    <section id="results" class="results" hidden aria-label="Results">
+      <div class="card score">
+        <p class="score__label">Keyword match</p>
+        <p id="score-value" class="score__value"></p>
+        <div class="meter" aria-hidden="true"><div id="score-bar" class="meter__fill"></div></div>
+        <p id="score-summary" class="score__summary"></p>
+        <details class="how">
+          <summary>How this is calculated</summary>
+          <ul>
+            <li>Key terms are tools and skills from a built-in list (like "Python" or "project management", in any common spelling) and from your own skills list, plus other words and two-word phrases the job description uses at least twice.</li>
+            <li>Everyday words and job-ad boilerplate, like "team" or "experience", are skipped.</li>
+            <li>Terms the job description mentions more often count more. The score is the weighted share your resume contains.</li>
+            <li>Word endings are matched loosely: "managing" matches "managed".</li>
+            <li>Some terms have built-in near-synonyms ("developer" for "engineer", "led" for "leadership"). If your resume uses one, the term is listed under <em>Said differently</em> but doesn't add to the score, because hiring filters usually look for exact words.</li>
+            <li>Other synonyms aren't recognised, so a term can show as missing even if you describe the same thing in other words.</li>
+            <li>There's no "passing" score. A higher number means more overlap in wording, nothing more.</li>
+          </ul>
+        </details>
+      </div>
+
+      <div class="result-grid">
+        <section class="card" aria-labelledby="missing-title">
+          <h2 id="missing-title">Missing from your resume</h2>
+          <p class="muted small">Most important first. Press ✕ on anything that doesn't apply to you and it won't count.</p>
+          <p id="mine-legend" class="muted small" hidden><span class="legend-swatch" aria-hidden="true"></span> Outlined: on your skills list.</p>
+          <ul id="missing" class="chips"></ul>
+          <div class="copy-row">
+            <button id="copy-missing" class="button button--small button--ghost" type="button">Copy this list</button>
+            <span id="copy-status" class="muted small" role="status"></span>
+          </div>
+          <div id="similar-section" class="similar" hidden>
+            <h3>Said differently on your resume</h3>
+            <p class="muted small">Your resume seems to cover these in other words. Hiring filters often look for the exact term, so consider using the job's wording where it's accurate. These don't add to the score.</p>
+            <ul id="similar" class="chips"></ul>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="found-title">
+          <h2 id="found-title">Already in your resume</h2>
+          <ul id="found" class="chips"></ul>
+        </section>
+      </div>
+
+      <section id="ignored-section" class="card" aria-labelledby="ignored-title" hidden>
+        <h2 id="ignored-title">Ignored</h2>
+        <p class="muted small">Not counted in the score.</p>
+        <ul id="ignored" class="chips"></ul>
+        <button id="restore-ignored" class="button button--small button--ghost" type="button">Count them again</button>
+      </section>
+
+      <section class="card" aria-labelledby="checks-title">
+        <h2 id="checks-title">Resume checks</h2>
+        <ul id="checks" class="checks"></ul>
+      </section>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

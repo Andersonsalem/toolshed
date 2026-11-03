@@ -1,0 +1,92 @@
+/* Einsum Explainer only. */
+
+/* One color per letter (validated palette). Text stays in the text color; the color is a tint and a bar. */
+:root { --l0: #2a78d6; --l1: #eb6834; --l2: #1baf7a; --l3: #eda100; --l4: #e87ba4; --l5: #008300; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --l0: #3987e5; --l1: #d95926; --l2: #199e70; --l3: #c98500; --l4: #d55181; --l5: #008300; }
+}
+:root[data-theme="dark"] { --l0: #3987e5; --l1: #d95926; --l2: #199e70; --l3: #c98500; --l4: #d55181; --l5: #008300; }
+.l0 { --c: var(--l0); } .l1 { --c: var(--l1); } .l2 { --c: var(--l2); }
+.l3 { --c: var(--l3); } .l4 { --c: var(--l4); } .l5 { --c: var(--l5); }
+
+.tool-intro { padding: 40px 0 8px; }
+.small { font-size: 0.9rem; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+code, pre { font-family: var(--font-mono); font-size: 0.92em; }
+
+/* ---------- Explorer ---------- */
+
+.explorer { margin-top: 16px; }
+.eq-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+.eq-field { flex: 1 1 260px; max-width: 420px; }
+.eq-field input { font-family: var(--font-mono); font-size: 1.3rem; }
+.error { margin: 10px 0 0; color: var(--danger); font-weight: 600; }
+
+.sizes { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 14px 0 0; }
+.size { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-weight: 400; }
+.size-input { width: 4.2em; min-height: 34px; padding: 4px 6px; }
+
+.letter { display: inline-block; min-width: 1.4em; padding: 0 4px; border-bottom: 3px solid var(--c); border-radius: 3px; background: color-mix(in srgb, var(--c) 18%, transparent); font-family: var(--font-mono); font-weight: 700; text-align: center; }
+
+.explain { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+.formula { margin: 0 0 8px; font-family: var(--font-mono); font-size: 1.1rem; line-height: 1.9; overflow-wrap: anywhere; }
+.same { margin: 0 0 8px; }
+.roles { margin: 0; padding-left: 1.2em; }
+.roles li + li { margin-top: 4px; }
+
+.grids { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 18px; }
+.group { display: flex; align-items: center; gap: 12px; min-width: 0; max-width: 100%; }
+.op { font-size: 1.5rem; color: var(--muted); }
+.operand { margin: 0; min-width: 0; max-width: 100%; }
+.operand figcaption { margin-bottom: 6px; }
+.operand figcaption strong { font-family: var(--font-mono); }
+.slices { display: flex; flex-wrap: wrap; gap: 10px; overflow-x: auto; }
+.slice__title { margin: 0 0 4px; font-size: 0.85rem; }
+.slice-rows { display: grid; gap: 12px; overflow-x: auto; }
+.slice-rows > .slices { overflow: visible; flex-wrap: nowrap; }
+
+.recipe { margin-top: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-small); background: var(--surface-2); }
+.recipe p { margin: 0 0 6px; }
+.recipe__groups { margin: 0 0 8px; padding-left: 1.2em; }
+.recipe__groups li + li { margin-top: 3px; }
+.recipe__code summary { cursor: pointer; font-weight: 600; }
+.recipe__code pre { margin: 6px 0 0; padding: 8px 10px; overflow-x: auto; background: var(--surface); border-radius: var(--radius-small); }
+
+.nums { border-collapse: separate; border-spacing: 3px; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.nums th { padding: 0 4px; font-weight: 400; font-size: 0.78rem; color: var(--muted); text-align: center; }
+.nums th.ix { color: var(--text); border-radius: 3px; background: color-mix(in srgb, var(--c, transparent) 16%, transparent); }
+.nums thead th.ix { border-bottom: 2px solid var(--c, transparent); }
+.nums tbody th.ix { border-right: 2px solid var(--c, transparent); }
+.nums .corner { white-space: nowrap; font-size: 0.75rem; }
+.cell { display: block; min-width: 2.2em; padding: 6px 4px; border: 1px solid var(--border); border-radius: 4px; background: var(--surface); color: var(--text); font: inherit; text-align: center; }
+td.cell { display: table-cell; }
+button.cell { width: 100%; cursor: pointer; }
+button.cell:hover { border-color: var(--accent); }
+.cell.is-hit { background: var(--accent-soft); border-color: var(--accent); font-weight: 700; }
+.cell.is-pick { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 700; }
+
+.pick { margin-top: 14px; padding: 10px 12px; border-left: 4px solid var(--accent); background: var(--surface-2); border-radius: 0 var(--radius-small) var(--radius-small) 0; }
+.pick p { margin: 0 0 4px; }
+.pick__sym, .pick__num { font-family: var(--font-mono); overflow-wrap: anywhere; }
+
+.loops { margin-top: 14px; }
+.loops summary { cursor: pointer; font-weight: 600; }
+.loops pre { margin: 8px 0 0; padding: 10px 12px; overflow-x: auto; background: var(--surface-2); border-radius: var(--radius-small); }
+
+/* ---------- Tutorial ---------- */
+
+.tutorial { margin-top: 36px; }
+.tutorial h2 { margin-bottom: 4px; }
+.lesson { margin-top: 14px; }
+.lesson h3, .tutorial .card h3 { margin: 0 0 8px; font-size: 1.1rem; }
+.lesson p { max-width: 46em; }
+.lesson ul { padding-left: 1.2em; max-width: 46em; }
+.lesson li + li { margin-top: 6px; }
+.try { display: flex; flex-wrap: wrap; gap: 6px; }
+.tutorial > .card:last-child { margin-top: 14px; }
+
+.table-wrap { position: relative; overflow-x: auto; }
+.cheat { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.cheat th, .cheat td { padding: 7px 8px; border-top: 1px solid var(--border); text-align: left; vertical-align: top; }
+.cheat thead th { border-top: 0; font-size: 0.85rem; color: var(--muted); }
+.cheat td:first-child code { white-space: nowrap; font-weight: 700; }

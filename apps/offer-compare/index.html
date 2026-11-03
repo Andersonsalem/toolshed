@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Offer Comparator</title>
+  <meta name="description" content="Free, private job offer comparison. Total pay, after-tax pay, what's left after living costs, and pay per hour of your time. Nothing is uploaded.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="fields.js"></script>
+  <script defer src="calc.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Offer Comparator">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Offer Comparator</h1>
+      <p class="lead">Put job offers side by side: total pay, pay after tax, what's left after living costs, and pay per hour of your time.</p>
+      <p class="notice small">
+        <strong>You bring the numbers.</strong> Tax rules and living costs differ too much from place to place for this page to guess them honestly,
+        so you enter your own estimates. Results are only as good as what you put in, and this isn't financial or tax advice.
+        Nothing you enter is uploaded.
+      </p>
+    </section>
+
+    <p id="storage-warning" class="notice notice--warning" hidden>
+      Your browser is blocking storage (this often happens in private windows), so your offers won't be saved when you close this page.
+    </p>
+
+    <div class="settings">
+      <div class="field">
+        <label for="currency">Currency</label>
+        <select id="currency"></select>
+      </div>
+      <div class="field">
+        <label for="years">Compare</label>
+        <select id="years"></select>
+      </div>
+      <div class="settings__actions">
+        <button id="example" class="button button--small button--ghost" type="button">Try an example</button>
+        <button id="clear" class="button button--small button--danger" type="button">Clear all</button>
+      </div>
+    </div>
+    <p class="muted small">Enter every offer in the same currency. Amounts can be typed like 95000, 95,000 or 95k.</p>
+
+    <div id="offers" class="offers"></div>
+    <button id="add-offer" class="button button--ghost add-offer" type="button">Add another offer</button>
+
+    <section id="results" class="results" aria-labelledby="results-title">
+      <h2 id="results-title">Comparison</h2>
+      <p id="results-hint" class="muted"></p>
+      <ul id="insights" class="insights"></ul>
+
+      <div id="breakdown" class="card breakdown" hidden>
+        <h3>Where the pay comes from</h3>
+        <ul id="legend" class="legend"></ul>
+        <div id="bars" class="bars"></div>
+      </div>
+
+      <div id="table-wrap" class="table-wrap" hidden>
+        <table class="compare">
+          <thead><tr id="table-head"></tr></thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+
+      <details class="assumptions">
+        <summary>How this is calculated</summary>
+        <ul>
+          <li>All figures are per year. With more than one year selected, they're the average per year over that time.</li>
+          <li>No raises are assumed. The bonus is counted at the amount you expect, which usually isn't guaranteed.</li>
+          <li>The signing bonus is spread over the years being compared, so it matters most in the first year. Repayment terms if you leave early aren't considered.</li>
+          <li>Equity is counted at the value you entered and vests evenly over its vesting period. Cliffs, refreshers and changes in value aren't modelled. Private company equity can end up worth nothing.</li>
+          <li>Tax is your rate applied to salary, bonus, signing bonus and equity. Retirement contributions and other benefits are counted as untaxed.</li>
+          <li>Pay per hour uses total pay before tax, divided by the hours you work and commute, after paid days off.</li>
+        </ul>
+      </details>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

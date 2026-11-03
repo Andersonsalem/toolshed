@@ -1,0 +1,148 @@
+/* Offer Comparator only. */
+
+:root {
+  --seg-base: #2f6f5e;
+  --seg-bonus: #6aa88f;
+  --seg-signing: #c9a227;
+  --seg-equity: #7a5ea8;
+  --seg-benefits: #a7b8b1;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --seg-base: #6cc3a8;
+    --seg-bonus: #3f8a72;
+    --seg-signing: #d8b84a;
+    --seg-equity: #a58bd1;
+    --seg-benefits: #5d6d67;
+  }
+}
+:root[data-theme="dark"] {
+  --seg-base: #6cc3a8;
+  --seg-bonus: #3f8a72;
+  --seg-signing: #d8b84a;
+  --seg-equity: #a58bd1;
+  --seg-benefits: #5d6d67;
+}
+
+.tool-intro { padding: 40px 0 8px; }
+.small { font-size: 0.9rem; }
+
+/* ---------- Settings ---------- */
+
+.settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 16px;
+  margin-top: 24px;
+}
+.settings .field { min-width: 180px; }
+.settings label { font-size: 0.85rem; color: var(--muted); }
+.settings__actions { display: flex; gap: 8px; margin-left: auto; }
+.settings + p { margin: 8px 0 0; }
+
+/* ---------- Offer cards ---------- */
+
+.offers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.offer { display: grid; gap: 12px; align-content: start; }
+.offer__head { display: flex; gap: 8px; align-items: center; }
+.offer__name { font-weight: 700; font-size: 1.05rem; }
+.offer__remove {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+.offer__remove:hover { color: var(--danger); border-color: var(--danger); }
+
+.offer-section { border-top: 1px solid var(--border); padding-top: 10px; }
+.offer-section > summary { cursor: pointer; font-weight: 600; width: fit-content; }
+.offer-section__title { margin: 0; font-size: 0.95rem; }
+.offer-fields { display: grid; gap: 10px; margin-top: 10px; }
+.offer-fields label { font-size: 0.88rem; margin-bottom: 2px; }
+.offer-fields small { display: block; margin-top: 3px; font-size: 0.8rem; color: var(--muted); }
+.offer-fields textarea { min-height: 80px; }
+.field-error { color: var(--danger) !important; font-weight: 600; }
+[aria-invalid="true"] { border-color: var(--danger); }
+
+.add-offer { margin-top: 16px; }
+
+/* ---------- Results ---------- */
+
+.results { margin-top: 2.5rem; }
+.results h2 { margin-top: 0; }
+
+.insights { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 8px; }
+.insights li {
+  padding: 12px 16px;
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.insights li.is-warning { border-left-color: var(--seg-signing); }
+
+.breakdown { margin-bottom: 16px; }
+.breakdown h3 { margin: 0 0 8px; }
+.legend { list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 0.85rem; color: var(--muted); }
+.legend li { display: inline-flex; align-items: center; gap: 6px; }
+.swatch { width: 12px; height: 12px; border-radius: 3px; flex: none; }
+.bars { display: grid; gap: 12px; }
+.bar-row p { margin: 0 0 4px; display: flex; justify-content: space-between; gap: 12px; font-size: 0.92rem; }
+.bar-row p span:last-child { font-variant-numeric: tabular-nums; color: var(--muted); }
+.bar { display: flex; height: 18px; border-radius: 4px; overflow: hidden; background: var(--surface-2); }
+.bar > span { display: block; height: 100%; }
+.bar > span + span { border-left: 2px solid var(--surface); }
+
+.seg-base { background: var(--seg-base); }
+.seg-bonus { background: var(--seg-bonus); }
+.seg-signing { background: var(--seg-signing); }
+.seg-equity { background: var(--seg-equity); }
+.seg-benefits { background: var(--seg-benefits); }
+
+/* The table scrolls sideways inside its box on narrow screens, never the page. */
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.compare { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.compare th,
+.compare td { padding: 10px 14px; text-align: right; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.compare thead th { font-size: 0.95rem; vertical-align: bottom; }
+.compare thead th small { display: block; font-weight: 400; color: var(--muted); }
+.compare th:first-child,
+.compare td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  text-align: left;
+  background: var(--surface);
+  font-weight: 400;
+  white-space: normal;
+  min-width: 150px;
+}
+.compare tbody tr:last-child td,
+.compare tbody tr:last-child th { border-bottom: 0; }
+.compare tr.is-total th,
+.compare tr.is-total td { font-weight: 700; background: var(--surface-2); }
+.compare tr.is-total th:first-child { background: var(--surface-2); }
+.compare tr.is-minus td { color: var(--muted); }
+.compare td.is-best { color: var(--accent); }
+.best-mark { margin-left: 6px; font-size: 0.75rem; font-weight: 700; }
+.row-note { display: block; font-size: 0.78rem; color: var(--muted); font-weight: 400; }
+
+.assumptions { margin-top: 16px; font-size: 0.9rem; color: var(--muted); }
+.assumptions summary { cursor: pointer; width: fit-content; }
+.assumptions ul { margin: 8px 0 0; padding-left: 1.2em; }

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tensor Shape Visualizer</title>
+  <meta name="description" content="Paste PyTorch or NumPy code and see every tensor drawn as a bar, grid or cube, step by step, with shape errors explained in plain words. Runs in your browser; nothing is uploaded.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="parse.js"></script>
+  <script defer src="tensor.js"></script>
+  <script defer src="ops.js"></script>
+  <script defer src="layers.js"></script>
+  <script defer src="eval.js"></script>
+  <script defer src="trace.js"></script>
+  <script defer src="draw.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Tensor Shape Visualizer">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Tensor Shape Visualizer</h1>
+      <p class="lead">Paste PyTorch or NumPy code and see every tensor drawn, step by step: a bar, a grid, a cube, a row of cubes. Each dimension keeps its color as it moves, and shape errors are explained in plain words.</p>
+    </section>
+
+    <p id="storage-warning" class="notice notice--warning" hidden>
+      Your browser is blocking storage (this often happens in private windows), so your code won't be kept when you close this page.
+    </p>
+
+    <div class="layout">
+      <section class="card editor" aria-labelledby="code-title">
+        <div class="editor__head">
+          <h2 class="card-title" id="code-title">Code</h2>
+          <div class="editor__actions">
+            <button class="button button--small button--ghost" type="button" id="copy-link">Copy link</button>
+          </div>
+        </div>
+        <p id="link-note" class="notice small" hidden></p>
+        <div class="examples" role="group" aria-label="Examples">
+          <span class="muted small">Examples:</span>
+          <span id="examples"></span>
+        </div>
+        <label for="code" class="visually-hidden">Python code</label>
+        <textarea id="code" spellcheck="false" autocomplete="off" autocapitalize="off" wrap="off" rows="18"></textarea>
+        <p class="muted small editor__hint">Updates as you type. A comment like <code># B C H W</code> after a line names its dimensions; <code># (8, 3, 32, 32)</code> checks the shape.</p>
+        <p id="restore" class="small" hidden><button class="button button--small button--ghost" type="button" id="restore-button">Put my code back</button></p>
+      </section>
+
+      <section class="results" aria-labelledby="steps-title" aria-live="polite">
+        <h2 class="visually-hidden" id="steps-title">Steps</h2>
+        <div id="steps"></div>
+      </section>
+    </div>
+
+    <section class="card notes" aria-labelledby="read-title">
+      <h2 class="card-title" id="read-title">How to read the drawings</h2>
+      <ul>
+        <li><strong>1D</strong> is a bar, <strong>2D</strong> a grid (rows × columns), <strong>3D</strong> a box: a stack of grids going back into the page. <strong>4D</strong> is a row of boxes (one per entry of the first dimension, usually the batch) and <strong>5D</strong> is rows of those. Beyond 5D, the last 5 dimensions are drawn.</li>
+        <li>The last dimension runs along the bottom edge, the one before it down the left edge, and the one before that along the edge going back. The numbers under boxes are their indices: box 2 is <code>x[2]</code>.</li>
+        <li>A dimension keeps its color through every operation, so you can follow it through a <code>permute</code> or <code>reshape</code>. Merged dimensions get a joined name like <em>C·H·W</em>. Size-1 dimensions are grey.</li>
+        <li>Lengths grow with the logarithm of the size, so 1,024 still fits next to 3. Compare the numbers, not the lengths.</li>
+        <li><strong>What feeds what?</strong> Click any cell of a drawing to trace that element (or focus a drawing and press Enter). Every drawing then shows, in violet, the elements that feed into it, and in dark grey, the later elements it feeds, through sums, matrix products, convolutions, pooling, normalization and the rest. Adjust the index in the bar at the top, or stop tracing there. Where a step picks elements by their values (index_select, gather, embeddings), the highlight covers every element that could be used, and the bar says so; if the tool doesn't know how an operation moves elements, the trace stops there and the bar names the line.</li>
+        <li><strong>Where do the elements go?</strong> Under a step that moves elements around (reshape, flatten, permute, broadcasting, repeat, indexing, cat, stack, split…), pick a dimension to color by. Each element of the input gets the color of its index along that dimension, and the result shows where each one landed: after <code>flatten</code> the colors become bands, after <code>permute</code> they run along a new edge, and broadcast or repeated elements repeat their color. Uncolored parts come from another input. A box shows its front, top and side; the colors inside it are hidden. Above 24 cells along an edge (12 going back), each painted cell stands for a range of elements.</li>
+      </ul>
+    </section>
+
+    <section class="card notes" aria-labelledby="covered-title">
+      <h2 class="card-title" id="covered-title">What it understands</h2>
+      <p>Straight-line code, one statement after another: assignments, method chains, indexing and arithmetic. A whole <code>nn.Module</code> can be pasted: the <code>class</code> and <code>def</code> lines are skipped and <code>self.layer</code> works. Add a line that makes the input, like <code>x = torch.randn(8, 3, 32, 32)</code>.</p>
+      <details>
+        <summary>The full list of operations</summary>
+        <dl class="ops">
+          <dt>Making tensors</dt>
+          <dd>torch: randn, rand, zeros, ones, empty, full, randint, randperm, arange, linspace, eye, tensor, from_numpy, *_like. NumPy: zeros, ones, empty, full, arange, linspace, eye, array, np.random (randn, rand, random, normal, uniform, randint, choice, permutation, default_rng).</dd>
+          <dt>Reshaping</dt>
+          <dd>reshape, view (with PyTorch's memory-layout rule), flatten, unflatten, ravel, squeeze, unsqueeze, expand_dims, permute, transpose, t, .T, .mT, swapaxes, movedim, moveaxis, expand, expand_as, broadcast_to, repeat, tile, repeat_interleave, np.repeat, contiguous, narrow, select.</dd>
+          <dt>Reductions</dt>
+          <dd>sum, mean, prod, std, var, max, min, amax, amin, argmax, argmin, median, any, all, logsumexp, norm, linalg.norm, cumsum, topk, sort; with dim / axis and keepdim / keepdims.</dd>
+          <dt>Joining and splitting</dt>
+          <dd>cat, concat, concatenate, stack, hstack, vstack, dstack, split, chunk, unbind, np.split, np.array_split.</dd>
+          <dt>Matrices</dt>
+          <dd>@, matmul (including 1D and batch broadcasting), mm, bmm, mv, dot, np.dot, outer, einsum (with ...), F.linear, linalg.inv, linalg.det.</dd>
+          <dt>Element by element</dt>
+          <dd>+ − * / // % **, comparisons, add, mul, maximum, where, masked_fill, and functions that keep the shape (exp, relu, sigmoid, softmax, clamp and many more), all with broadcasting.</dd>
+          <dt>Indexing</dt>
+          <dd>Numbers, slices with steps, None / np.newaxis, ..., and lists of indices (including several at once), gather, index_select.</dd>
+          <dt>Layers (torch.nn and F)</dt>
+          <dd>Linear, Conv1d/2d/3d (stride, padding, 'same', dilation, groups), ConvTranspose, MaxPool, AvgPool, AdaptiveAvgPool, Flatten, Unflatten, Embedding, BatchNorm, LayerNorm, GroupNorm, Upsample / interpolate, pad, PixelShuffle, Dropout, activations, Sequential, scaled_dot_product_attention, and losses (cross_entropy, mse_loss and others) with their shape checks.</dd>
+        </dl>
+      </details>
+      <h3 class="small-title">Not covered, on purpose</h3>
+      <p class="small">Anything whose output size depends on the values: boolean masks (<code>x[x &gt; 0]</code>), <code>nonzero</code>, <code>unique</code>. Recurrent and attention layers (<code>nn.LSTM</code>, <code>nn.MultiheadAttention</code>, Transformer layers), sparse and complex tensors, and data types. Loops and <code>if</code> statements: write each step on its own line.</p>
+    </section>
+
+    <section class="card notes" aria-labelledby="honest-title">
+      <h2 class="card-title" id="honest-title">How it works</h2>
+      <ul>
+        <li>It doesn't run Python. It reads your code and applies each operation's shape rule, written from the PyTorch 2 and NumPy 2 documentation. No numbers are computed, which is why it's instant even for huge tensors.</li>
+        <li>Where a library's own error message is known, it's quoted under the plain-English explanation, so you'll recognise it when you see it for real.</li>
+        <li>It covers the common operations, not all of them. If it says it doesn't know something, that's not a claim that it doesn't exist.</li>
+        <li>Your code stays in this browser and is saved there. Nothing is uploaded. “Copy link” puts the code in the link itself.</li>
+      </ul>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

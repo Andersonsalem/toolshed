@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Regex Generator</title>
+  <meta name="description" content="Build a regular expression from an example and plain-language blocks, with lookarounds, groups and backreferences, for JavaScript, Python, Java, C#, PHP or Go, explained line by line.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="rx.js"></script>
+  <script defer src="presets.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="Regex Generator">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>Regex Generator</h1>
+      <p class="lead">Type an example of what you want to find. It becomes plain-language blocks you can loosen or tighten, and you get the regex for your language, a live test, and an explanation of every part.</p>
+    </section>
+
+    <p id="storage-warning" class="notice notice--warning" hidden>
+      Your browser is blocking storage (this often happens in private windows), so your work won't be saved when you close this page.
+    </p>
+
+    <div id="app">
+      <noscript><p class="notice">This tool needs JavaScript turned on.</p></noscript>
+    </div>
+
+    <section class="card notes">
+      <h2 class="card-title">Good to know</h2>
+      <ul class="small">
+        <li><strong>Blocks run in order.</strong> Each block matches the next piece of text. Use <em>How many</em> to say a piece repeats or is optional.</li>
+        <li><strong>Groups</strong> keep blocks together, so they can repeat as one unit. A <em>capture</em> group also remembers what it matched, so you can use it later (with <em>Same text as a group</em>) or read it in your code.</li>
+        <li><strong>Followed by / preceded by</strong> checks what's next to the match without making it part of the match. For example: a number, only if preceded by “$”.</li>
+        <li><strong>As few as possible</strong> (lazy) stops a repeat at the first chance, which matters with “any character”: in <code>"a" and "b"</code>, quoted text with <em>as few as possible</em> finds <code>"a"</code> and <code>"b"</code> separately instead of one long match.</li>
+        <li><strong>Never give back</strong> (possessive, atomic) makes a repeat keep everything it took. It's for speed in big texts; most patterns don't need it.</li>
+        <li><strong>Languages differ.</strong> The regex is written for the language you pick, and the notes under it say what that language can't do. The test box runs the JavaScript version in your browser.</li>
+        <li>Nothing you type leaves your browser.</li>
+      </ul>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QR Code Generator</title>
+  <meta name="description" content="Free QR code generator for links, Wi-Fi, contacts, email, calls and texts. Codes never expire and don't go through anyone's server. Download PNG or SVG.">
+  <link rel="icon" href="../../shared/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="app.css">
+  <script defer src="../../shared/config.js"></script>
+  <script defer src="../../shared/layout.js"></script>
+  <script defer src="../../shared/storage.js"></script>
+  <script defer src="vendor/qrcode.js"></script>
+  <script defer src="formats.js"></script>
+  <script defer src="render.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body data-page-title="QR Code Generator">
+  <div data-site-header></div>
+
+  <main class="container">
+    <section class="tool-intro">
+      <h1>QR Code Generator</h1>
+      <p class="lead">QR codes for links, Wi-Fi, contacts, emails, calls and texts. Everything is inside the code itself, so it never expires and nobody tracks who scans it.</p>
+    </section>
+
+    <div class="kinds" id="kinds" role="tablist" aria-label="What the code is for"></div>
+
+    <div class="layout">
+      <div class="side">
+        <form class="card" id="fields" autocomplete="off"></form>
+
+        <details class="card style" id="style-box">
+          <summary>Style and size</summary>
+          <div class="style-grid">
+            <div class="field">
+              <label for="fg">Code color</label>
+              <input id="fg" type="color">
+            </div>
+            <div class="field">
+              <label for="bg">Background</label>
+              <input id="bg" type="color">
+            </div>
+            <label class="check"><input type="checkbox" id="transparent"> Transparent background</label>
+            <div class="field wide">
+              <label for="margin">Border: <strong id="margin-out"></strong> squares</label>
+              <input id="margin" type="range" min="0" max="8">
+            </div>
+            <div class="field wide">
+              <label for="level">Error correction</label>
+              <select id="level"></select>
+              <p class="muted small">Higher means the code still scans when scratched or partly covered, but it gets denser. Medium suits most uses; choose High for codes that will get worn, like stickers outdoors.</p>
+            </div>
+            <div class="field wide">
+              <label for="png-size">PNG size</label>
+              <select id="png-size">
+                <option value="300">Small (about 300 px), for screens and messages</option>
+                <option value="1000">Medium (about 1,000 px)</option>
+                <option value="2000">Large (about 2,000 px), for print</option>
+              </select>
+              <p class="muted small">For posters and anything that gets resized, SVG stays sharp at every size.</p>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <section class="card preview" aria-labelledby="preview-title">
+        <h2 class="visually-hidden" id="preview-title">Your QR code</h2>
+        <div class="frame">
+          <canvas id="canvas" role="img" aria-label="QR code"></canvas>
+          <p id="placeholder" class="placeholder muted"></p>
+        </div>
+        <p id="info" class="muted small info"></p>
+        <ul id="warnings" class="warnings"></ul>
+        <div class="actions">
+          <button class="button" type="button" id="dl-png">Download PNG</button>
+          <button class="button button--ghost" type="button" id="dl-svg">Download SVG</button>
+          <button class="button button--ghost" type="button" id="copy">Copy image</button>
+        </div>
+        <p id="status" class="muted small" role="status"></p>
+        <details class="encoded">
+          <summary>Exactly what's in the code</summary>
+          <pre id="encoded"></pre>
+        </details>
+      </section>
+    </div>
+
+    <section class="card notes">
+      <h2 class="card-title">Good to know</h2>
+      <ul>
+        <li><strong>These codes never stop working.</strong> Many "free" QR sites make codes that point to their own server and then redirect, so they can count scans, and the codes stop working if you don't pay. Codes made here hold your link or details directly.</li>
+        <li>That also means you can't change where a code points after printing it. If the link might change, point it at a page you control.</li>
+        <li><strong>Test before you print.</strong> Scan the code with a couple of phones, from the distance people will use. A rule of thumb: the code should be at least a tenth as wide as the scanning distance (30 cm away → at least 3 cm wide).</li>
+        <li>Dark code on a light background scans best. Light-on-dark and low-contrast colors fail in many scanner apps.</li>
+        <li>Nothing you type is saved or sent anywhere. Only the style settings are remembered in this browser.</li>
+      </ul>
+      <p class="muted small">QR codes are made with <a href="https://github.com/kazuhikoarase/qrcode-generator" rel="noopener">qrcode-generator</a> by Kazuhiko Arase (MIT licence). "QR Code" is a registered trademark of DENSO WAVE INCORPORATED.</p>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+</body>
+</html>

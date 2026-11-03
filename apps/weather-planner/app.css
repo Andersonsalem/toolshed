@@ -1,0 +1,137 @@
+/* Weather Planner only. */
+
+.tool-intro { padding: 40px 0 8px; }
+.small { font-size: 0.9rem; }
+.card-title { margin: 0 0 10px; font-size: 1.1rem; }
+.sub-title { margin: 18px 0 8px; font-size: 0.95rem; }
+.inline-label { display: inline; margin: 0; font-weight: 600; font-size: 0.88rem; }
+.is-error { color: var(--danger); font-weight: 600; }
+
+.online-note p { margin: 0; }
+.online-note p + p { margin-top: 6px; }
+.badge--online { margin-right: 6px; background: var(--accent-soft); color: var(--accent); }
+
+.card + .card, .where, #forecast > .card { margin-top: 16px; }
+.where { margin-top: 20px; }
+
+/* ---------- Where ---------- */
+
+.search { display: flex; flex-wrap: wrap; gap: 8px; }
+.search input { flex: 1 1 220px; }
+.results-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 4px; }
+.results-list button {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.results-list button:hover { border-color: var(--accent); }
+.results-list .muted { font-size: 0.85rem; }
+.places { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.place {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.place button { border: 0; background: transparent; color: var(--text); font: inherit; cursor: pointer; }
+.place__go { padding: 6px 4px 6px 14px; }
+.place__remove { width: 30px; height: 32px; color: var(--muted) !important; }
+.place.is-current { border-color: var(--accent); background: var(--accent-soft); }
+.units { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
+.units select { width: auto; min-height: 34px; }
+
+/* ---------- Now and next hours ---------- */
+
+.now__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; }
+.now__head h2 { margin: 0; font-size: 1.2rem; }
+.now__body { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 10px; }
+.now__icon { font-size: 3rem; line-height: 1; }
+.now__temp { font-size: 2.6rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.now__text p { margin: 0; }
+.now__text p + p { color: var(--muted); font-size: 0.92rem; }
+
+.hours { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; }
+.hour {
+  flex: 0 0 64px;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 8px 4px;
+  border-radius: var(--radius-small);
+  background: var(--surface-2);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+.hour__icon { font-size: 1.3rem; line-height: 1.2; }
+.hour__temp { font-weight: 700; font-size: 0.95rem; }
+.hour__rain { color: var(--muted); font-size: 0.78rem; }
+
+/* ---------- Week ---------- */
+
+.days { list-style: none; margin: 0; padding: 0; }
+.day {
+  display: grid;
+  grid-template-columns: 110px 34px 1fr auto;
+  gap: 4px 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.93rem;
+}
+.day:last-child { border-bottom: 0; }
+.day__name { font-weight: 600; }
+.day__icon { font-size: 1.4rem; text-align: center; }
+.day__detail { color: var(--muted); font-size: 0.85rem; }
+.day__temps { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.day__temps strong { margin-right: 6px; }
+@media (max-width: 560px) {
+  .day { grid-template-columns: 34px 1fr auto; }
+  .day__icon { grid-row: 1 / span 2; }
+  .day__name { grid-column: 2; }
+  .day__detail { grid-column: 2 / -1; }
+  .day__temps { grid-column: 3; grid-row: 1; }
+}
+
+/* ---------- Planner ---------- */
+
+.plan__activity select { width: auto; min-width: 240px; font-weight: 600; }
+.criteria { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; margin-top: 12px; }
+.criteria label { font-size: 0.85rem; }
+.unit-input { display: flex; align-items: center; gap: 6px; }
+.unit-input span { color: var(--muted); font-size: 0.88rem; white-space: nowrap; }
+.field.check { display: flex; align-items: center; gap: 8px; align-self: end; min-height: 40px; }
+.field.check input { width: 20px; height: 20px; }
+.field.check label { margin: 0; font-weight: 400; font-size: 0.92rem; }
+
+.slots { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 8px; }
+.slot { padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-small); }
+.slot p { margin: 0; }
+.slot__when { font-weight: 600; }
+.slot__detail { color: var(--muted); font-size: 0.88rem; }
+.slot--best { border-color: var(--accent); border-left-width: 4px; }
+.slot--best .slot__when::after { content: " · Best"; color: var(--accent); }
+.plan-note { margin: 14px 0 0; }
+
+/* Week grid: one row per day, one cell per hour. */
+.grid-wrap { overflow-x: auto; }
+.week-grid { display: grid; grid-template-columns: 54px repeat(24, minmax(14px, 1fr)); gap: 2px; min-width: 480px; font-size: 0.75rem; }
+.week-grid .label { color: var(--muted); align-self: center; }
+.week-grid .hour-label { color: var(--muted); text-align: center; }
+.cell { height: 20px; border-radius: 3px; background: var(--surface-2); }
+.cell--good { background: var(--accent); }
+.cell--dark { background: transparent; border: 1px dashed var(--border); }
+.cell--past { opacity: 0.25; }
+.cell--slot { box-shadow: 0 0 0 2px var(--text) inset; }
+.grid-legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 8px 0 0; padding: 0; list-style: none; font-size: 0.82rem; color: var(--muted); }
+.grid-legend li { display: inline-flex; align-items: center; gap: 6px; }
+.grid-legend .cell { width: 14px; height: 14px; display: inline-block; }
+
+.attribution { margin-top: 16px; }
