@@ -2,6 +2,8 @@
 
 Free tools that run in the browser. No backend, no build step, no package manager. The few third-party libraries are copied into the site (see below).
 
+**Note:** This was built using claude code because I got offered a subscription and don't really know what to do with it. It's a fun way to provide people with useful tools and learning resources I myself can guarantee (because it uses my notes on obsidian for these and I double check before comitting). Anyways, I hope these are useful for you.
+
 ## Principles
 
 1. **Honest.** Say exactly what a tool does and assumes. Mark anything unfinished as *Planned*. Never claim more than is true.
